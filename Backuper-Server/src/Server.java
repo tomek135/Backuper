@@ -2,8 +2,10 @@
 public class Server {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		MainWindow frame = new MainWindow();
+		frame.setVisible(true);
+		Authentication ath = new Authentication("REGISTER","Marcos","fenix");
+		Authentication ath2 = new Authentication("LOGIN","Marcos","fenix");
 	}
 
 }
