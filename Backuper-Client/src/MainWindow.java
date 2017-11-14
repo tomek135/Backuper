@@ -62,7 +62,17 @@ public class MainWindow extends JFrame {
 		JButton btnZarejestrujSi = new JButton("Zarejestruj si\u0119");
 		btnZarejestrujSi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				String login = textField_login.getText();
+				System.out.println("login " +login);
+				char[] password = passwordField.getPassword();
+				System.out.println("pass " + password.toString());
+				String passwordToString = password.toString();
+				String host = textField_adres.getText();
+				System.out.println(textField_port.getText());
+				int port = Integer.parseInt(textField_port.getText());
+				System.out.println("port "+ port);
+				Connection.checkAuthorizationAfterRegister(login,passwordToString,host,port);
+				System.out.println("posz³o");
 			}
 		});
 		btnZarejestrujSi.setBounds(166, 203, 117, 23);
@@ -99,7 +109,7 @@ public class MainWindow extends JFrame {
 		textField_port = new JTextField();
 		textField_port.setBounds(166, 133, 117, 20);
 		textField_port.setColumns(10);
-		textField_port.addKeyListener(new KeyAdapter() {
+		/*textField_port.addKeyListener(new KeyAdapter() {
 	            public void keyTyped(KeyEvent e) {
 	                char character = e.getKeyChar();
 	                if (((character < '0') || (character > '9'))
@@ -108,10 +118,25 @@ public class MainWindow extends JFrame {
 	                }
 
 	            }
-	        });
+	        });*/
 		contentPane.add(textField_port);
 		
 		JButton btnZaloguj = new JButton("Zaloguj");
+		btnZaloguj.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String login = textField_login.getText();
+				System.out.println("login " +login);
+				char[] password = passwordField.getPassword();
+				System.out.println("pass " + password.toString());
+				String passwordToString = password.toString();
+				String host = textField_adres.getText();
+				System.out.println(textField_port.getText());
+				int port = Integer.parseInt(textField_port.getText());
+				System.out.println("port "+ port);
+				Connection.checkAuthorizationAfterLogin(login,passwordToString,host,port);
+				System.out.println("posz³o");
+			}
+		});
 		btnZaloguj.setBounds(166, 169, 117, 23);
 		contentPane.add(btnZaloguj);
 		
