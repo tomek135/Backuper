@@ -7,8 +7,10 @@ public class Client {
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					try {
-						MainWindow frame = new MainWindow();
+						Connection connection = new Connection();
+						MainWindow frame = new MainWindow(connection);
 						frame.setVisible(true);
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

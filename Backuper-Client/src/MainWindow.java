@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -29,11 +30,12 @@ public class MainWindow extends JFrame {
 	private JTextField textField_adres;
 	private JTextField textField_port;
 	private JPasswordField passwordField;
-
+	private String response;
+	private JFrame frame = this;
 	/**
 	 * Create the frame.
 	 */
-	public MainWindow() {
+	public MainWindow(Connection connection) {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 375, 300);
@@ -71,10 +73,18 @@ public class MainWindow extends JFrame {
 				System.out.println(textField_port.getText());
 				int port = Integer.parseInt(textField_port.getText());
 				System.out.println("port "+ port);
-				Connection.checkAuthorizationAfterRegister(login,passwordToString,host,port);
-				System.out.println("posz³o");
+				response = connection.checkAuthorizationAfterRegister(login,passwordToString,host,port);
+				
+				switch(response) {
+					case "REG":
+						JOptionPane.showMessageDialog(frame, "Rejestracja przebieg³a pomyœlnie");
+					case "BUSY":
+						JOptionPane.showMessageDialog(frame, "Uzytkownik juz istnieje");
+				}
+
 			}
 		});
+
 		btnZarejestrujSi.setBounds(166, 203, 117, 23);
 		contentPane.add(btnZarejestrujSi);
 		
@@ -133,8 +143,16 @@ public class MainWindow extends JFrame {
 				System.out.println(textField_port.getText());
 				int port = Integer.parseInt(textField_port.getText());
 				System.out.println("port "+ port);
-				Connection.checkAuthorizationAfterLogin(login,passwordToString,host,port);
-				System.out.println("posz³o");
+				response = connection.checkAuthorizationAfterLogin(login,passwordToString,host,port);
+				
+				switch(response) {
+					case "OK":
+						JOptionPane.showMessageDialog(frame, "Zalogowano pomyslnie");
+					case "BRAK":
+						JOptionPane.showMessageDialog(frame, "Nie ma takiego uzytkownika");
+					case "WRONG":
+						JOptionPane.showMessageDialog(frame, "Podane has³o jest nieprawid³owe");
+				}
 			}
 		});
 		btnZaloguj.setBounds(166, 169, 117, 23);

@@ -8,27 +8,32 @@ import java.util.HashMap;
 
 
 public class Authentication{
-	public Authentication(){};
 	
-	public Authentication(String action, String login, String password) {
+	public String authenticate(String action, String login, String password) {
 		HashMap<String, String> userData= loadUserData();
-		if(action=="LOGIN") {
+		String raport = null;
+		
+		if(action.equals("LOGIN")) {
 			if(userData.keySet().contains(login) && userData.get(login).equals(password))
 			{
-				System.out.println("Zalogowano pomyslnie");
+				raport = "OK";
+			}else if(userData.keySet().contains(login) && !userData.get(login).equals(password)){
+				raport = "WRONG";
 			}else {
-				System.out.println("Nie ma takiego uzytkownika");
+				raport = "BRAK";
 			}
-		}else if(action=="REGISTER"){
+		}else if(action.equals("REGISTER")){
 			if(userData.keySet().contains(login))
 			{
-				System.out.println("Uzytkownik juz istnieje");
+				raport = "BUSY";
 			}else {
 				userData.put(login, password);
 				saveUserData(userData);
+				raport = "REG";
 			}
 
 		}
+		return raport;
 		
 	}
 	

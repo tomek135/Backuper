@@ -14,6 +14,7 @@ public class MainWindow extends JFrame{
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 	
 }
