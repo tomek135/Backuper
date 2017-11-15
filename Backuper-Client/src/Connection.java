@@ -7,7 +7,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.rmi.ConnectException;
 import java.rmi.UnknownHostException;
+
+import javax.swing.JOptionPane;
 
 public class Connection {
 	
@@ -21,6 +24,7 @@ public class Connection {
 	BufferedReader br;
 	
 	
+
 	String SendToServer(String toSend,String host,int port) {
 			String response = null;
 			
@@ -34,12 +38,17 @@ public class Connection {
 				new InputStreamReader(is));
 				response = br.readLine();
 		
+				
 				}catch (UnknownHostException exc) {
 						System.out.println("Nieznany host: " + host);
+						response = "NOTCONNECTED";
+				}catch (ConnectException exc) {
+					System.out.println("Brak po³¹czenia z serwerem");
+					response = "NOTCONNECTED";				
 				}catch (Exception e) {
-						System.err.println("Client exception: " + e);
+					response = "NOTCONNECTED";
 				}
-			return response;
+					return response;
 		}
 		
 	String checkAuthorizationAfterLogin(String login,String haslo,String host,int port) {
@@ -56,7 +65,11 @@ public class Connection {
 				os.close();
 				socket.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				return "NOTCONNECTED";
+				//e.printStackTrace();
+			} catch (Exception e) {
+				System.out.println("Brak po³¹czenia z serwerem");
+				return "NOTCONNECTED";
 			}
 		}
 		return response;
@@ -73,7 +86,11 @@ public class Connection {
 			os.close();
 			socket.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			return "NOTCONNECTED";
+			//e.printStackTrace();
+		}catch (Exception e) {
+			System.out.println("Brak po³¹czenia z serwerem");
+			return "NOTCONNECTED";
 		}
 		return response;
 	}
