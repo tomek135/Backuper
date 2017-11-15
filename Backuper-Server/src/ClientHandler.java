@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,10 +38,11 @@ public class ClientHandler extends Thread {
 				Authentication auth = new Authentication();
 				String messageBack = auth.authenticate(action, login, password);
 				System.out.println("messageBack" + messageBack);
-				pw.println(messageBack);
 				if(messageBack.equals("OK")) {
-					fileListener();
+					//fileListener();
+					pw.println(messageBack);
 				}else {
+					pw.println(messageBack);
 					exit=false;
 					br.close();
 					is.close();
@@ -52,13 +54,37 @@ public class ClientHandler extends Thread {
 		System.out.println("koniec");
 		
 	   } catch (Exception e) {
-		System.err.println("Server exception: " + e);
+		   System.err.println("Server exception: " + e);
 	   }
 	
    }
    
-   void fileListener() {
+	void fileListener() {
+		pw.println("OK");
+		while(true) {
+			
+			String[] message = null;;
+			try {
+				message = br.readLine().split(";");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String command = message[0];
 
-   }
+			if(command.equals("SEND")) {
+					int fileLenght = Integer.parseInt(message[1]); 
+					String filename = message[2];
+					FileReceiver receiver = new FileReceiver(socket, fileLenght, filename);
+					receiver.start();
+			}else if(command.equals("DOWNLOAD")){ 
+					String filenames = message[1];
+					File myFile = new File(filenames);
+					int filelenghts = (int)(myFile.length());
+					pw.println(filelenghts);
+					FileSender sender = new FileSender(socket, myFile);
+					sender.start();
+			}
+	}
+	}
 }
 

@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,12 +13,12 @@ public class Connection {
 	
 	Socket socket;
 	String host;
-	 String dataToSend;
+	String dataToSend;
 	int port;
 	OutputStream os;
 	PrintWriter pw;
 	InputStream is;
-	 BufferedReader br;
+	BufferedReader br;
 	
 	
 	String SendToServer(String toSend,String host,int port) {
@@ -46,7 +47,7 @@ public class Connection {
 		dataToSend = "LOGIN"+";"+login+";"+haslo;
 		response =  SendToServer(dataToSend,host,port);
 		if(response.equals("OK")) {
-			fileListener();
+			//fileListener("SEND","Capture.PNG");
 		}else {
 			try {
 				br.close();
@@ -77,8 +78,24 @@ public class Connection {
 		return response;
 	}
 	
-	static void fileListener() {
-		
+	
+	void fileListener(String command, String filename) {
+		try {
+			if(command.equals("SEND")) {
+					File myFile = new File(filename);
+					int fileLenght = (int) myFile.length();
+					pw.println(command+";"+fileLenght+";"+filename);
+					FileSender sender = new FileSender(socket, filename, myFile);
+					sender.start();
+			}else if(command.equals("DOWNLOAD")){ 
+					pw.println(command+";"+filename);
+					int filelenght = Integer.parseInt(br.readLine());
+					FileReceiver receiver = new FileReceiver(socket, filelenght, filename);
+					receiver.start();
+			}		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
 

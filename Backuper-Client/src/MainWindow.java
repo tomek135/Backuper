@@ -68,7 +68,8 @@ public class MainWindow extends JFrame {
 				System.out.println("login " +login);
 				char[] password = passwordField.getPassword();
 				System.out.println("pass " + password.toString());
-				String passwordToString = password.toString();
+				//String passwordToString = password.toString();
+				String passwordToString ="a";
 				String host = textField_adres.getText();
 				System.out.println(textField_port.getText());
 				int port = Integer.parseInt(textField_port.getText());
@@ -138,7 +139,7 @@ public class MainWindow extends JFrame {
 				System.out.println("login " +login);
 				char[] password = passwordField.getPassword();
 				System.out.println("pass " + password.toString());
-				String passwordToString = password.toString();
+				String passwordToString = "a";
 				String host = textField_adres.getText();
 				System.out.println(textField_port.getText());
 				int port = Integer.parseInt(textField_port.getText());
@@ -148,10 +149,13 @@ public class MainWindow extends JFrame {
 				switch(response) {
 					case "OK":
 						JOptionPane.showMessageDialog(frame, "Zalogowano pomyslnie");
+						break;
 					case "BRAK":
 						JOptionPane.showMessageDialog(frame, "Nie ma takiego uzytkownika");
+						break;
 					case "WRONG":
 						JOptionPane.showMessageDialog(frame, "Podane has³o jest nieprawid³owe");
+						break;
 				}
 			}
 		});
