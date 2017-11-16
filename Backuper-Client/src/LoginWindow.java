@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -15,6 +16,8 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
+
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -43,7 +46,11 @@ public class LoginWindow extends JFrame {
 	public LoginWindow(Connection connection) {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 375, 300);
+		setSize(375,300);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (int) ((screen.getWidth() - getWidth()) /2);
+		int y = (int) ((screen.getHeight() -getHeight()) /2);
+		setLocation(x, y); 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -69,36 +76,37 @@ public class LoginWindow extends JFrame {
 		JButton btnZarejestrujSi = new JButton("Zarejestruj si\u0119");
 		btnZarejestrujSi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-/*				String login = textField_login.getText();
-				System.out.println("login " +login);
+				login = textField_login.getText();
 				char[] password = passwordField.getPassword();
-				System.out.println("pass " + password.toString());
-				String passwordToString = String.valueOf(password);
-				System.out.println("password: "+ passwordToString);
-				//String passwordToString ="a";
-				String host = textField_adres.getText();
-				System.out.println(textField_port.getText());
-				int port = Integer.parseInt(textField_port.getText());
-				System.out.println("port "+ port);*/
-				if(weryfikujDane(login,passwordToString,host,port))
-				{
+				passwordToString = String.valueOf(password);
+				host = textField_adres.getText();
+				try {
+					port = Integer.parseInt(textField_port.getText());
 					
-					response = connection.checkAuthorizationAfterRegister(login,passwordToString,host,port);
-					
-					switch(response) {
-						case "REG":
-							JOptionPane.showMessageDialog(frame, "Rejestracja przebieg³a pomyœlnie");
-							break;
-						case "BUSY":
-							JOptionPane.showMessageDialog(frame, "Uzytkownik juz istnieje");
-							break;
-						case "NOTCONNECTED":
-							JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem");
-							break;
+					if(weryfikujDane(login,passwordToString,host))
+					{
+						
+						response = connection.checkAuthorizationAfterRegister(login,passwordToString,host,port);
+						
+						switch(response) {
+							case "REG":
+								JOptionPane.showMessageDialog(frame, "Rejestracja przebieg³a pomyœlnie");
+								break;
+							case "BUSY":
+								JOptionPane.showMessageDialog(frame, "Uzytkownik juz istnieje");
+								break;
+							case "NOTCONNECTED":
+								JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem");
+								break;
+						}
 					}
-				}
-				else {
-					JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
+					else {
+						JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
+					}
+				}catch (Exception e)
+				{
+					JOptionPane.showMessageDialog(frame, "Podano nie poprawny port");
+					return;
 				}
 
 			}
@@ -123,7 +131,8 @@ public class LoginWindow extends JFrame {
 		textField_adres = new JTextField();
 		textField_adres.setBounds(166, 108, 117, 20);
 		textField_adres.setColumns(10);
-		textField_adres.addKeyListener(new KeyAdapter() {
+		//jezeli mamy wpisywac localhost to nie trzeba tego robic
+/*		textField_adres.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 char character = e.getKeyChar();
                 if (((character < '0') || (character > '9'))
@@ -132,7 +141,7 @@ public class LoginWindow extends JFrame {
                 }
 
             }
-        });
+        });*/
 		contentPane.add(textField_adres);
 		
 		textField_port = new JTextField();
@@ -153,42 +162,46 @@ public class LoginWindow extends JFrame {
 		JButton btnZaloguj = new JButton("Zaloguj");
 		btnZaloguj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-/*				String login = textField_login.getText();
-				System.out.println("login " +login);
+				login = textField_login.getText();
 				char[] password = passwordField.getPassword();
-				System.out.println("pass " + password.toString());
-				String passwordToString = String.valueOf(password);
-				String host = textField_adres.getText();
-				System.out.println(textField_port.getText());
-				int port = Integer.parseInt(textField_port.getText());
-				System.out.println("port "+ port);*/
-				if(weryfikujDane(login,passwordToString,host,port))
-				{
-					response = connection.checkAuthorizationAfterLogin(login,passwordToString,host,port);
-					System.out.println("odp: " +response);
-					switch(response) {
-						case "OK":
-						{
-							JOptionPane.showMessageDialog(frame, "Zalogowano pomyslnie");
-							MainWindow mainWindow = new MainWindow(connection);
-							mainWindow.setVisible(true);
-							setVisible(false);
-							break;
+				passwordToString = String.valueOf(password);
+				host = textField_adres.getText();
+				try {
+					port = Integer.parseInt(textField_port.getText());
+					
+					if(weryfikujDane(login,passwordToString,host))
+					{
+						response = connection.checkAuthorizationAfterLogin(login,passwordToString,host,port);
+						System.out.println("odp: " +response);
+						switch(response) {
+							case "OK":
+							{
+								JOptionPane.showMessageDialog(frame, "Zalogowano pomyslnie");
+								MainWindow mainWindow = new MainWindow(connection);
+								mainWindow.setVisible(true);
+								setVisible(false);
+								break;
+							}
+							case "BRAK":
+								JOptionPane.showMessageDialog(frame, "Nie ma takiego uzytkownika");
+								break;
+							case "WRONG":
+								JOptionPane.showMessageDialog(frame, "Podane has³o jest nieprawid³owe");
+								break;
+							case "NOTCONNECTED":
+								JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem");
+								break;
 						}
-						case "BRAK":
-							JOptionPane.showMessageDialog(frame, "Nie ma takiego uzytkownika");
-							break;
-						case "WRONG":
-							JOptionPane.showMessageDialog(frame, "Podane has³o jest nieprawid³owe");
-							break;
-						case "NOTCONNECTED":
-							JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem");
-							break;
 					}
+					else {
+						JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
+					}
+				}catch (Exception e)
+				{
+					JOptionPane.showMessageDialog(frame, "Podano nie poprawny port");
+					return;
 				}
-				else {
-					JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
-				}
+
 			}
 		});
 		btnZaloguj.setBounds(166, 169, 117, 23);
@@ -199,30 +212,14 @@ public class LoginWindow extends JFrame {
 		contentPane.add(passwordField);
 	}
 	
-	boolean weryfikujDane(String login, String haslo, String host, int port) {
+	boolean weryfikujDane(String login, String haslo, String host) {
 		
-		try {
-			login = textField_login.getText();
-			if(login=="a")
-			{
-				System.out.println("login nulle");
-				return false;
-			}
-			char[] password = passwordField.getPassword();
-			haslo = String.valueOf(password);
-			host = textField_adres.getText();
-			port = Integer.parseInt(textField_port.getText());
-			System.out.println("a"+login+"b");
-			if(login == "" || haslo =="" || host=="" || port== 0)
+			if(login.equals("") || haslo.equals("") || host.equals(""))
 			{
 				System.out.println("tutej");
 				return false;
 			}
 			else
-				return true;
-		}catch(Exception e) {
-			System.out.println("excetpiorn");
-			return false;
-		}
+				return true;	
 	}
 }

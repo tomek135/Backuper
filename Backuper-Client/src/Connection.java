@@ -29,7 +29,7 @@ public class Connection {
 			String response = null;
 			
 			try{
-				socket = new Socket("localhost", port);
+				socket = new Socket(host, port);
 				os = socket.getOutputStream();
 				pw = new PrintWriter(os, true);
 				pw.println(toSend);
@@ -54,6 +54,7 @@ public class Connection {
 	String checkAuthorizationAfterLogin(String login,String haslo,String host,int port) {
 		String response = null;
 		dataToSend = "LOGIN"+";"+login+";"+haslo;
+		System.out.println("data to send" +dataToSend);
 		response =  SendToServer(dataToSend,host,port);
 		if(response.equals("OK")) {
 			//fileListener("SEND","Capture.PNG");
