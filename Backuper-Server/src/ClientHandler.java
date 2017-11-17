@@ -8,13 +8,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
 ;
 
 public class ClientHandler extends Thread {
 
-	Socket socket; 
+	Socket socket;
+	String user;
 	BufferedReader br;
 	InputStream is;
+	InputStreamReader isr;
 	OutputStream os;
 	PrintWriter pw;
 	boolean exit = true;
@@ -25,66 +28,74 @@ public class ClientHandler extends Thread {
    public void run() {
 	   try {
 		   is = socket.getInputStream();
-		   br = new BufferedReader(new InputStreamReader(is));
+		   isr = new InputStreamReader(is);
+		   br = new BufferedReader(isr);
 		   os = socket.getOutputStream();
 		   pw = new PrintWriter(os, true);
 		
-		   while(exit) {
-				String[] message = br.readLine().split(";");
-				String action = message[0];
-				String login = message[1];
-				String password = message[2];
-				System.out.println(action);				
-				Authentication auth = new Authentication();
-				String messageBack = auth.authenticate(action, login, password);
-				System.out.println("messageBack" + messageBack);
-				if(messageBack.equals("OK")) {
-					//fileListener();
-					pw.println(messageBack);
-				}else {
-					pw.println(messageBack);
-					exit=false;
-					br.close();
-					is.close();
-					pw.close();
-					os.close();
-					socket.close();
-				}
+
+		   String[] message = br.readLine().split(";");
+		   String action = message[0];
+		   String login = message[1];
+		   String password = message[2];
+		   System.out.println(action);				
+		   Authentication auth = new Authentication();
+		   String messageBack = auth.authenticate(action, login, password);
+		   System.out.println("messageBack" + messageBack);
+		   if(messageBack.equals("OK")) {
+			   user = login;
+			   pw.println("OK");
+			   while(exit) {
+				   fileListener();
+			   }
+		   }else {
+			   pw.println(messageBack);
+			   exit=false;
+			   br.close();
+			   is.close();
+			   pw.close();
+			   os.close();
+			   socket.close();
 		   }
+
 		System.out.println("koniec");
 		
 	   } catch (Exception e) {
 		   System.err.println("Server exception: " + e);
+		   e.printStackTrace();
 	   }
 	
    }
    
-	void fileListener() {
-		pw.println("OK");
-		while(true) {
+	void fileListener()  {
+		
+		try {
+
+			String[] table = null;		
+			String message = br.readLine();
 			
-			String[] message = null;;
-			try {
-				message = br.readLine().split(";");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			String command = message[0];
+			table = message.split(";");
+			String command = table[0];
 
 			if(command.equals("SEND")) {
-					int fileLenght = Integer.parseInt(message[1]); 
-					String filename = message[2];
-					FileReceiver receiver = new FileReceiver(socket, fileLenght, filename);
-					receiver.start();
-			}else if(command.equals("DOWNLOAD")){ 
-					String filenames = message[1];
-					File myFile = new File(filenames);
-					int filelenghts = (int)(myFile.length());
-					pw.println(filelenghts);
-					FileSender sender = new FileSender(socket, myFile);
-					sender.start();
-			}
+				CountDownLatch doneSignal = new CountDownLatch(1);
+				String filename = table[1];
+				FileReceiver receiver = new FileReceiver(socket, filename, doneSignal, user, pw);
+				receiver.start();
+				doneSignal.await();
+			}else if(command.equals("DOWNLOAD")){
+				CountDownLatch doneSignal = new CountDownLatch(1);
+				String filenames = table[1];
+				File myFile = new File(filenames);
+				FileSender sender = new FileSender(socket, myFile);
+				sender.start();
+				doneSignal.await();
+			}			
+			exit=false;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();		
+		}
+
 	}
-	}
-}
+}	
 

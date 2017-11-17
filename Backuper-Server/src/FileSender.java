@@ -17,14 +17,17 @@ public class FileSender extends Thread {
 	public void run() {
 		try {
 
-			byte[] mybytearray = new byte[(int) file.length()];
+			byte[] mybytearray = new byte[8192];
 			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-			bis.read(mybytearray, 0, mybytearray.length);
 			OutputStream os = socket.getOutputStream();
-			os.write(mybytearray, 0, mybytearray.length);
+			int count;
+			while ((count = bis.read(mybytearray)) > -1)
+			{
+			  os.write(mybytearray, 0, count);
+			}
+			System.out.println("koniec przesylania");
 			os.close();
 			bis.close();
-			socket.close();
 			System.out.println("koniec");
 		}catch(IOException e) {
 			e.printStackTrace();

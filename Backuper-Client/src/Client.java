@@ -10,7 +10,6 @@ public class Client {
 						Connection connection = new Connection();
 						LoginWindow frame = new LoginWindow(connection);
 						frame.setVisible(true);
-						//tutej wywo³ywane okno
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

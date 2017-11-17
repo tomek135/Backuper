@@ -13,10 +13,15 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
+	private JLabel lblNewLabel;
+	private String file;
+	private String katalog;;
 
 	/**
 	 * Create the frame.
@@ -42,27 +47,50 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				FileDialog fd =new FileDialog(new MainWindow(connection),"Wczytaj",FileDialog.LOAD);
 				     fd.setVisible(true);
-				     String katalog=fd.getDirectory();
-				     String plik=fd.getFile();
-				     System.out.println("Wybrano plik: " + plik);
+				     katalog=fd.getDirectory();
+				     file = fd.getFile();
+				     lblNewLabel.setText(katalog + file);
+				     System.out.println("Wybrano plik: " + file);
 				     System.out.println("w katalogu: "+ katalog);
-				     System.out.println("Œcie¿ka: "+ katalog + plik); 
+				     System.out.println("Œcie¿ka: "+ katalog + file); 
 			}
 		});
+		
+		
+		
+		JButton btnNewButton_1 = new JButton("Wy\u015Blij");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+					connection.fileListener("SEND", file);
+			}
+		});
+		
+		lblNewLabel = new JLabel("\u015Aciezka");
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(45)
-					.addComponent(btnNewButton)
-					.addContainerGap(295, Short.MAX_VALUE))
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addGap(84)
+							.addComponent(btnNewButton)
+							.addGap(35)
+							.addComponent(btnNewButton_1, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panel.createSequentialGroup()
+							.addGap(70)
+							.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 331, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(28, Short.MAX_VALUE))
 		);
 		gl_panel.setVerticalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
+			gl_panel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(38)
-					.addComponent(btnNewButton)
-					.addContainerGap(161, Short.MAX_VALUE))
+					.addContainerGap(73, Short.MAX_VALUE)
+					.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnNewButton)
+						.addComponent(btnNewButton_1))
+					.addGap(96))
 		);
 		panel.setLayout(gl_panel);
 		
@@ -72,5 +100,4 @@ public class MainWindow extends JFrame {
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("Pobierz z serwera", null, panel_2, null);
 	}
-
 }
