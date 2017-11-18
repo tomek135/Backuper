@@ -10,27 +10,43 @@ public class FileSender extends Thread {
 	
 	Socket socket;
 	File file;
+	long size;
+	BufferedInputStream bis;
+	OutputStream os;
 	
-	public FileSender(Socket socket,String filename, File file) {
+	public FileSender(Socket socket,String filename, File file,long size) {
 		
 		this.socket = socket;
 		this.file = file;
+		this.size = size;
+		
 	}
 	public void run() {
 		try {
 			byte[] mybytearray = new byte[8192];
-			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-			OutputStream os = socket.getOutputStream();
+			bis = new BufferedInputStream(new FileInputStream(file));
+			os = socket.getOutputStream();
 			int count;
 			while ((count = bis.read(mybytearray)) > 0)
 			{
 			  os.write(mybytearray, 0, count);
 			}
-			os.close();
-			bis.close();
-			System.out.println("koniec");
+				close();
+				System.out.println("koniec");
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-    }
+	}
+	
+	public void close() {
+		try {
+			os.close();
+			bis.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("kappa");
+		}
+		
+	}
  }

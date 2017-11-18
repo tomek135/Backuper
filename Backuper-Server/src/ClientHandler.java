@@ -21,6 +21,7 @@ public class ClientHandler extends Thread {
 	OutputStream os;
 	PrintWriter pw;
 	boolean exit = true;
+	long size;
 	public ClientHandler(Socket socket) throws IOException { 
         this.socket = socket; 
     } 
@@ -80,7 +81,8 @@ public class ClientHandler extends Thread {
 			if(command.equals("SEND")) {
 				CountDownLatch doneSignal = new CountDownLatch(1);
 				String filename = table[1];
-				FileReceiver receiver = new FileReceiver(socket, filename, doneSignal, user, pw);
+				size = Long.parseLong(table[2]);
+				FileReceiver receiver = new FileReceiver(socket, filename, doneSignal, user, pw,size);
 				receiver.start();
 				doneSignal.await();
 			}else if(command.equals("DOWNLOAD")){

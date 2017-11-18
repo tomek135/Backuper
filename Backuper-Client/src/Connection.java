@@ -96,12 +96,12 @@ public class Connection {
 	}
 	
 	
-	void fileListener(String command, String filename) {
+	void fileListener(String command, String filename, long size) {
 	try {	
 		if(command.equals("SEND")) {
 				File myFile = new File(filename);
-				pw.println(command+";"+filename);
-				FileSender sender = new FileSender(socket, filename, myFile);
+				pw.println(command+";"+filename+";"+size);
+				FileSender sender = new FileSender(socket, filename, myFile,size);
 				sender.start();
 				//String answer = br.readLine();
 				//if(answer.equals("SUCCESS")){

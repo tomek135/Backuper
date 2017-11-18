@@ -1,4 +1,5 @@
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.CountDownLatch;
 
+import javax.swing.JOptionPane;
+
 public class FileReceiver extends Thread {
 	
 	Socket socket;
@@ -18,29 +21,35 @@ public class FileReceiver extends Thread {
 	String user;
 	PrintWriter pw;
 	private final CountDownLatch doneSignal;
+	String path;
+	long size = 0;
 	
-	public FileReceiver(Socket socket, String fileName, CountDownLatch doneSignal, String user, PrintWriter pw) {
+	public FileReceiver(Socket socket, String fileName, CountDownLatch doneSignal, String user, PrintWriter pw, long size) {
 		this.doneSignal = doneSignal;
 		this.socket = socket;
 		this.fileName = fileName;
 		this.user = user;
 		this.pw = pw;
+		this.size = size;
+		path=System.getProperty("user.dir");
 	}
 	
 	public void run() {
 		try {
 		System.out.println("poczatek przesylania");
+		System.out.println(path);
 		byte[] mybytearray = new byte[8192];
 		InputStream is = socket.getInputStream();
-		checkFile(fileName);
-		if(checkFile(fileName) == false) {
-			Files.createDirectories(Paths.get("P:/Backuper/Backuper/"+user));
-			FileOutputStream fos = new FileOutputStream("P:/Backuper/Backuper/"+user+"/"+fileName);
+		//checkFile(fileName);
+		if(true) {
+			Files.createDirectories(Paths.get(path+"/"+ user));
+			FileOutputStream fos = new FileOutputStream(path+"/"+user+"/"+fileName);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			int count;
 			while ((count = is.read(mybytearray)) > 0)
 			{
 				bos.write(mybytearray, 0, count);
+				System.out.println(count);
 			}
 			System.out.println("koniec przesylania");
 			//pw.println("SUCCESS");
@@ -50,7 +59,7 @@ public class FileReceiver extends Thread {
 			//pw.println("ALREADY");
 		}
 		}catch(IOException e) {
-			e.printStackTrace();
+			System.out.println("Client zamkniety");
 		}
 		doneSignal.countDown();
   }
@@ -58,17 +67,25 @@ public class FileReceiver extends Thread {
 	boolean checkFile(String filename){
 		// String size, String lastModification, String creationDate
 		boolean change = false;
-		try {
-		Path p = Paths.get("P:/Backuper/Backuper/"+user+"/"+fileName);
-		BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
-		if(attr.size()== 15545) {
-			change = true;
-		}
-		System.out.println(attr.size());
 		
-		} catch (IOException e) {
-			e.printStackTrace();
+		Path p = Paths.get(path+"/"+user+"/"+fileName);
+		System.out.println("sciezka: " + p.toString());
+		File f = new File(p.toString());
+		if(f.exists() && !f.isDirectory()) { 
+			try {
+				System.out.println("istnieje");
+				BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
+				if(attr.size()== size) {
+					change = true;
+					System.out.println("ten sam plik");
+				}
+				System.out.println(attr.size() + "aaa"+f.length()+"aaaa"+size);
+				
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
+		
 		return change;
 		
 	}

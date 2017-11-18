@@ -119,7 +119,7 @@ public class LoginWindow extends JFrame {
 		textField_login.setBounds(166, 58, 117, 20);
 		contentPane.add(textField_login);
 		textField_login.setColumns(10);
-		//textField_login.setText("h");
+		textField_login.setText("admins");
 		
 		JLabel lblAdresSerwera = new JLabel("Adres serwera");
 		lblAdresSerwera.setBounds(60, 111, 96, 14);
@@ -132,7 +132,7 @@ public class LoginWindow extends JFrame {
 		textField_adres = new JTextField();
 		textField_adres.setBounds(166, 108, 117, 20);
 		textField_adres.setColumns(10);
-		//textField_adres.setText("localhost");
+		textField_adres.setText("localhost");
 		//jezeli mamy wpisywac localhost to nie trzeba tego robic
 /*		textField_adres.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
@@ -149,7 +149,7 @@ public class LoginWindow extends JFrame {
 		textField_port = new JTextField();
 		textField_port.setBounds(166, 133, 117, 20);
 		textField_port.setColumns(10);
-		//textField_port.setText("1234");
+		textField_port.setText("1234");
 		/*textField_port.addKeyListener(new KeyAdapter() {
 	            public void keyTyped(KeyEvent e) {
 	                char character = e.getKeyChar();

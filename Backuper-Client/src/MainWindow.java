@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,27 +10,42 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JButton;
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JList;
 
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
 	private String file;
-	private String katalog;;
+	private String katalog;
+	String path;
+	long size = 0;
 
 	/**
 	 * Create the frame.
 	 */
 	public MainWindow(Connection connection) {
+		path = System.getProperty("user.dir");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setSize(450,300);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (int) ((screen.getWidth() - getWidth()) /2);
+		int y = (int) ((screen.getHeight() -getHeight()) /2);
+		setLocation(x, y); 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -50,6 +66,16 @@ public class MainWindow extends JFrame {
 				     katalog=fd.getDirectory();
 				     file = fd.getFile();
 				     lblNewLabel.setText(katalog + file);
+				     Path p = Paths.get(katalog+"/"+file);
+				     BasicFileAttributes attr;
+					try {
+						attr = Files.readAttributes(p, BasicFileAttributes.class);
+						size = attr.size();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				     
 				     System.out.println("Wybrano plik: " + file);
 				     System.out.println("w katalogu: "+ katalog);
 				     System.out.println("Œcie¿ka: "+ katalog + file); 
@@ -61,7 +87,7 @@ public class MainWindow extends JFrame {
 		JButton btnNewButton_1 = new JButton("Wy\u015Blij");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-					connection.fileListener("SEND", file);
+					connection.fileListener("SEND", file,size);
 			}
 		});
 		

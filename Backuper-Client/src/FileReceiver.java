@@ -16,18 +16,18 @@ public class FileReceiver extends Thread {
 	
 	public void run() {
 		try {
-		byte[] mybytearray = new byte[8192];
-		InputStream is = socket.getInputStream();
-		FileOutputStream fos = new FileOutputStream(fileName);
-		BufferedOutputStream bos = new BufferedOutputStream(fos);
-		int count;
-		while ((count = is.read(mybytearray)) > -1)
-		{
-		  bos.write(mybytearray, 0, count);
-		}
-		bos.close();
-		fos.close();
-		is.close();
+			byte[] mybytearray = new byte[8192];
+			InputStream is = socket.getInputStream();
+			FileOutputStream fos = new FileOutputStream(fileName);
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			int count;
+			while ((count = is.read(mybytearray)) > -1)
+			{
+			  bos.write(mybytearray, 0, count);
+			}
+			bos.close();
+			fos.close();
+			is.close();
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
