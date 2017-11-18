@@ -136,8 +136,6 @@ public class MainWindow extends JFrame {
 		
 		JButton btnNewButton_2 = new JButton("Wy\u015Bwietl list\u0119");
 		btnNewButton_2.setBounds(10, 11, 130, 23);
-
-		//String[] data = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5","Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 4", "Item 5","Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 		
 		panel_1.setLayout(null);
 		panel_1.add(btnNewButton_2);

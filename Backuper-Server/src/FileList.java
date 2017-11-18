@@ -32,7 +32,6 @@ public class FileList extends Thread{
     }
     
     String getFiles() {
-    	System.out.println("files do wyslania:" +files);
     	return files;
     }
 }
