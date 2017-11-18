@@ -17,11 +17,14 @@ public class Connection {
 	Socket socket;
 	String host;
 	String dataToSend;
+	String login;
 	int port;
+	String[] list = {""};
 	OutputStream os;
 	PrintWriter pw;
 	InputStream is;
 	BufferedReader br;
+	FileList fileList;
 	
 	
 
@@ -52,6 +55,7 @@ public class Connection {
 		}
 		
 	String checkAuthorizationAfterLogin(String login,String haslo,String host,int port) {
+		this.login = login;
 		String response = null;
 		dataToSend = "LOGIN"+";"+login+";"+haslo;
 		System.out.println("data to send" +dataToSend);
@@ -114,9 +118,27 @@ public class Connection {
 				FileReceiver receiver = new FileReceiver(socket, filename);
 				receiver.start();
 		}
-	}catch(Exception e) {
-		e.printStackTrace();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
+	
+	void fileList(String command) {
+		pw.println(command+";"+login);
+		try {
+			String message = br.readLine();
+			list = message.split(";");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 	}
+	
+	String[] getList() {
+		return list;
+	}
+	
 }
 

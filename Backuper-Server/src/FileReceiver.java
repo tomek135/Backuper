@@ -21,7 +21,7 @@ public class FileReceiver extends Thread {
 	String user;
 	PrintWriter pw;
 	private final CountDownLatch doneSignal;
-	String path;
+	String path=System.getProperty("user.dir");
 	long size = 0;
 	
 	public FileReceiver(Socket socket, String fileName, CountDownLatch doneSignal, String user, PrintWriter pw, long size) {
@@ -31,7 +31,7 @@ public class FileReceiver extends Thread {
 		this.user = user;
 		this.pw = pw;
 		this.size = size;
-		path=System.getProperty("user.dir");
+		//path=System.getProperty("user.dir");
 	}
 	
 	public void run() {

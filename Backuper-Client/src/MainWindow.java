@@ -20,10 +20,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JList;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 
 public class MainWindow extends JFrame {
 
@@ -31,8 +37,12 @@ public class MainWindow extends JFrame {
 	private JLabel lblNewLabel;
 	private String file;
 	private String katalog;
+	private JScrollPane scrollPane;
+	DefaultListModel listModel;
+	JList list;
 	String path;
 	long size = 0;
+	int i = 0;
 
 	/**
 	 * Create the frame.
@@ -121,7 +131,43 @@ public class MainWindow extends JFrame {
 		panel.setLayout(gl_panel);
 		
 		JPanel panel_1 = new JPanel();
+	
 		tabbedPane.addTab("Pliki na serwerze", null, panel_1, null);
+		
+		JButton btnNewButton_2 = new JButton("Wy\u015Bwietl list\u0119");
+		btnNewButton_2.setBounds(10, 11, 130, 23);
+
+		//String[] data = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5","Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 4", "Item 5","Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+		
+		panel_1.setLayout(null);
+		panel_1.add(btnNewButton_2);
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				connection.fileList("LIST");
+				System.out.println("adasaaaa"+ Arrays.toString(connection.getList()));
+				
+				listModel=new DefaultListModel();
+				if(i>0)
+				{
+					scrollPane.setVisible(false);
+					listModel.clear();
+				}				
+				for (int i=0; i<connection.getList().length; i++) {
+				  listModel.addElement(connection.getList()[i]);
+				  System.out.println(connection.getList()[i]);
+				}
+				list = new JList(listModel);
+			    scrollPane = new JScrollPane(list);
+				scrollPane.setBounds(0, 45, 429, 177);
+				panel_1.add(scrollPane);
+				scrollPane.setVisible(true);
+				scrollPane.setVisible(false);
+				scrollPane.setVisible(true);
+				i++;
+			}
+		});
+		
 		
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("Pobierz z serwera", null, panel_2, null);

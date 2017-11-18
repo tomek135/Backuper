@@ -92,12 +92,33 @@ public class ClientHandler extends Thread {
 				FileSender sender = new FileSender(socket, myFile);
 				sender.start();
 				doneSignal.await();
-			}			
-			exit=false;
+			}else if(command.equals("LIST")){
+				CountDownLatch doneSignal = new CountDownLatch(1);
+				FileList fileList = new FileList(table[1],doneSignal);
+				fileList.start();
+				doneSignal.await();
+				pw.println(fileList.getFiles());
+				System.out.println("bbnbnbnbn:" +fileList.getFiles());
+			}	
+			
 		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();		
+			close();
+			
 		}
 
 	}
+	
+	public void close()
+	{
+		try{
+			socket.close();
+		}catch (IOException e) {
+			System.out.println("Polaczenie nie moglo byc zamkniete");
+		}finally {
+			System.exit(0);
+		}
+	}
+	
+	
 }	
 

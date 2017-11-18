@@ -19,7 +19,7 @@ public class MainWindow extends JFrame{
 		
 	private JPanel contentPane;
 	private JTextField textField_port;
-	Server serwer = new Server();
+	Server serwer;
 	
 	public MainWindow() {
 		
@@ -71,7 +71,7 @@ public class MainWindow extends JFrame{
 			public void actionPerformed(ActionEvent arg0)
             {
 				int port = Integer.parseInt(textField_port.getText());
-				new Server(port);
+				serwer = new Server(port);
             }			
 		});	
 	}

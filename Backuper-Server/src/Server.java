@@ -28,17 +28,6 @@ public class Server implements Runnable{
 		new Thread(this).start();
 	}
 	
-/*	public void createServer(int port){
-			try{
-				serverSocket = new ServerSocket(port);
-				System.out.println("Server is working on port: "+port);
-				} catch (Exception e) {
-					System.err.println("Create server socket:" + e);
-					return;
-				}
-	}*/
-	
-	
 	public void close()
 	{
 		try{
@@ -50,7 +39,6 @@ public class Server implements Runnable{
 			System.out.println("Serwer wyl¹czony ");
 			System.exit(0);
 		}
-		
 	}
 	
 
@@ -64,7 +52,7 @@ public class Server implements Runnable{
 	             handler.start();
 	             System.out.println("Connection established"); 
             } catch (IOException e) {
-				e.printStackTrace();
+            	close();
             }  
        
           	} 
@@ -72,10 +60,6 @@ public class Server implements Runnable{
 	
 	public static void main(String[] args) {
 		MainWindow frame = new MainWindow();
-		//Server server = new Server();
-		//server.createServer();
-		
-
 	}
 }
 
