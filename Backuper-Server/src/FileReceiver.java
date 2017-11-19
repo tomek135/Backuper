@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.concurrent.CountDownLatch;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -20,28 +21,32 @@ public class FileReceiver extends Thread {
 	String fileName;
 	String user;
 	PrintWriter pw;
-	private final CountDownLatch doneSignal;
 	String path=System.getProperty("user.dir");
 	long size = 0;
+	OutputStream os;
 	
-	public FileReceiver(Socket socket, String fileName, CountDownLatch doneSignal, String user, PrintWriter pw, long size) {
-		this.doneSignal = doneSignal;
+	public FileReceiver(Socket socket, String fileName, String user, PrintWriter pw, long size) {
 		this.socket = socket;
 		this.fileName = fileName;
 		this.user = user;
 		this.pw = pw;
 		this.size = size;
-		//path=System.getProperty("user.dir");
+		
 	}
 	
 	public void run() {
 		try {
+
+		int privatePort = getPort();
+		ServerSocket privateServerSocket = new ServerSocket(privatePort);
+		System.out.println("przed wyslaniem portu");
+		pw.println(privatePort);
+		Socket privateSocket = privateServerSocket.accept();
 		System.out.println("poczatek przesylania");
 		System.out.println(path);
 		byte[] mybytearray = new byte[8192];
-		InputStream is = socket.getInputStream();
-		//checkFile(fileName);
-		if(true) {
+		InputStream is = privateSocket.getInputStream();
+	
 			Files.createDirectories(Paths.get(path+"/"+ user));
 			FileOutputStream fos = new FileOutputStream(path+"/"+user+"/"+fileName);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -49,23 +54,19 @@ public class FileReceiver extends Thread {
 			while ((count = is.read(mybytearray)) > 0)
 			{
 				bos.write(mybytearray, 0, count);
-				System.out.println(count);
 			}
 			System.out.println("koniec przesylania");
-			//pw.println("SUCCESS");
 			bos.close();
 			fos.close();
-		}else {
-			//pw.println("ALREADY");
-		}
+			privateSocket.close();
+			privateServerSocket.close();
+			
 		}catch(IOException e) {
 			System.out.println("Client zamkniety");
 		}
-		doneSignal.countDown();
   }
 	
 	boolean checkFile(String filename){
-		// String size, String lastModification, String creationDate
 		boolean change = false;
 		
 		Path p = Paths.get(path+"/"+user+"/"+fileName);
@@ -87,6 +88,16 @@ public class FileReceiver extends Thread {
 		}
 		
 		return change;
+		
+	}
+	
+	int getPort() {
+		Random rand = new Random();
+		int  port = rand.nextInt(8000) + 1000;
+		while(ClientHandler.portSet.contains(port)) {
+			port = rand.nextInt(8000) + 1000;
+		}
+		return port;
 		
 	}
 }

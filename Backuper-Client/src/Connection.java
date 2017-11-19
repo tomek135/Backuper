@@ -10,10 +10,11 @@ import java.net.Socket;
 import java.rmi.ConnectException;
 import java.rmi.UnknownHostException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Connection {
-	
+
 	Socket socket;
 	String host;
 	String dataToSend;
@@ -61,7 +62,7 @@ public class Connection {
 		System.out.println("data to send" +dataToSend);
 		response =  SendToServer(dataToSend,host,port);
 		if(response.equals("OK")) {
-			//fileListener("SEND", "Capture.PNG");
+
 		}else {
 			try {
 				br.close();
@@ -100,22 +101,16 @@ public class Connection {
 	}
 	
 	
-	void fileListener(String command, String filename, long size) {
+	void fileListener(String command, String filename, long size, JFrame frame, String directory) {
 	try {	
 		if(command.equals("SEND")) {
 				File myFile = new File(filename);
 				pw.println(command+";"+filename+";"+size);
-				FileSender sender = new FileSender(socket, filename, myFile,size);
+				FileSender sender = new FileSender(socket, filename, myFile,size, br, host,frame);
 				sender.start();
-				//String answer = br.readLine();
-				//if(answer.equals("SUCCESS")){
-				//	System.out.println("Plik przes³any");
-				//}else if(answer.equals("ALREADY")) {
-				//	System.out.println("Plik znajduje sie jzu na serwerze");
-				//}
 		}else if(command.equals("DOWNLOAD")){ 
 				pw.println(command+";"+filename);
-				FileReceiver receiver = new FileReceiver(socket, filename);
+				FileReceiver receiver = new FileReceiver(socket, filename, host, br, frame, directory);
 				receiver.start();
 		}
 		}catch(Exception e) {
@@ -128,9 +123,7 @@ public class Connection {
 		try {
 			String message = br.readLine();
 			list = message.split(";");
-			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	

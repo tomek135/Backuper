@@ -1,10 +1,14 @@
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class FileSender extends Thread {
 	
@@ -13,40 +17,40 @@ public class FileSender extends Thread {
 	long size;
 	BufferedInputStream bis;
 	OutputStream os;
+	BufferedReader br;
+	String host;
+	JFrame frame;
 	
-	public FileSender(Socket socket,String filename, File file,long size) {
+	public FileSender(Socket socket,String filename, File file,long size, BufferedReader br, String host, JFrame frame) {
 		
 		this.socket = socket;
 		this.file = file;
 		this.size = size;
-		
+		this.host = host;
+		this.br = br;
+		this.frame = frame;
 	}
 	public void run() {
 		try {
+			int privatePort = Integer.parseInt(br.readLine());
+			Socket privateSocket = new Socket(host, privatePort);
 			byte[] mybytearray = new byte[8192];
 			bis = new BufferedInputStream(new FileInputStream(file));
-			os = socket.getOutputStream();
+			os = privateSocket.getOutputStream();
 			int count;
 			while ((count = bis.read(mybytearray)) > 0)
 			{
 			  os.write(mybytearray, 0, count);
 			}
-				close();
+			JOptionPane.showMessageDialog(frame, "Plik "+ file+ " zosta³ wys³any");
+			os.close();
+			bis.close();
+			privateSocket.close();
 				System.out.println("koniec");
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void close() {
-		try {
-			os.close();
-			bis.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("kappa");
-		}
-		
-	}
+
  }

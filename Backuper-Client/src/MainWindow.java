@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -25,6 +26,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
@@ -33,6 +36,7 @@ import javax.swing.JScrollPane;
 
 public class MainWindow extends JFrame {
 
+	private JFrame frame = this;
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
 	private String file;
@@ -40,6 +44,7 @@ public class MainWindow extends JFrame {
 	private JScrollPane scrollPane;
 	DefaultListModel listModel;
 	JList list;
+	boolean listSelected = false;
 	String path;
 	long size = 0;
 	int i = 0;
@@ -48,6 +53,7 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow(Connection connection) {
+		
 		path = System.getProperty("user.dir");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,7 +103,7 @@ public class MainWindow extends JFrame {
 		JButton btnNewButton_1 = new JButton("Wy\u015Blij");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-					connection.fileListener("SEND", file,size);
+					connection.fileListener("SEND", file,size,frame,file);
 			}
 		});
 		
@@ -135,13 +141,54 @@ public class MainWindow extends JFrame {
 		tabbedPane.addTab("Pliki na serwerze", null, panel_1, null);
 		
 		JButton btnNewButton_2 = new JButton("Wy\u015Bwietl list\u0119");
-		btnNewButton_2.setBounds(10, 11, 130, 23);
+		btnNewButton_2.setBounds(0, 11, 130, 23);
 		
 		panel_1.setLayout(null);
 		panel_1.add(btnNewButton_2);
+		
+		JButton btnNewButton_3 = new JButton("Usu\u0144 plik");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(listSelected == true) {
+						if(list.getSelectedValue() != null) {
+
+						}else {
+							JOptionPane.showMessageDialog(frame, "Wybierz plik do usuniêcia");
+						}
+				}else {
+					JOptionPane.showMessageDialog(frame, "Wyswietl liste aby wybraæ plik");
+				}
+			}
+		});
+		btnNewButton_3.setBounds(148, 11, 130, 23);
+		panel_1.add(btnNewButton_3);
+		
+		JButton btnNewButton_4 = new JButton("Pobierz plik");
+		btnNewButton_4.setBounds(299, 11, 130, 23);
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(listSelected == true) {
+					if(list.getSelectedValue() != null) {
+				        JFileChooser f = new JFileChooser();
+				        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
+				        f.showSaveDialog(null);
+				        String directory = f.getCurrentDirectory().getAbsolutePath();
+						file = (String) list.getSelectedValue();
+						connection.fileListener("DOWNLOAD", file, size, frame, directory);
+						
+					}else {
+						JOptionPane.showMessageDialog(frame, "Wybierz plik do usuniêcia");
+					}
+				}else {
+					JOptionPane.showMessageDialog(frame, "Wyswietl liste aby wybraæ plik");
+				}
+			}
+		});
+		
+		panel_1.add(btnNewButton_4);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				listSelected = true;
 				connection.fileList("LIST");
 				System.out.println("adasaaaa"+ Arrays.toString(connection.getList()));
 				
@@ -167,7 +214,5 @@ public class MainWindow extends JFrame {
 		});
 		
 		
-		JPanel panel_2 = new JPanel();
-		tabbedPane.addTab("Pobierz z serwera", null, panel_2, null);
 	}
 }

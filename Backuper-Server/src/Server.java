@@ -20,6 +20,7 @@ public class Server implements Runnable{
 	{
 		try{
 			serverSocket = new ServerSocket(port);
+			ClientHandler.portSet.add(port);
 			System.out.println("Server is working on port: "+port);
 			} catch (Exception e) {
 				System.err.println("Create server socket:" + e);

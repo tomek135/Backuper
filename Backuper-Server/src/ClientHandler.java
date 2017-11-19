@@ -8,11 +8,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 ;
 
 public class ClientHandler extends Thread {
-
+	
+	static Set<Integer> portSet = new HashSet<Integer>();
 	Socket socket;
 	String user;
 	BufferedReader br;
@@ -79,19 +82,16 @@ public class ClientHandler extends Thread {
 			String command = table[0];
 
 			if(command.equals("SEND")) {
-				CountDownLatch doneSignal = new CountDownLatch(1);
+
 				String filename = table[1];
 				size = Long.parseLong(table[2]);
-				FileReceiver receiver = new FileReceiver(socket, filename, doneSignal, user, pw,size);
+				FileReceiver receiver = new FileReceiver(socket, filename, user, pw, size);
 				receiver.start();
-				doneSignal.await();
 			}else if(command.equals("DOWNLOAD")){
-				CountDownLatch doneSignal = new CountDownLatch(1);
 				String filenames = table[1];
 				File myFile = new File(filenames);
-				FileSender sender = new FileSender(socket, myFile);
+				FileSender sender = new FileSender(socket, myFile, pw);
 				sender.start();
-				doneSignal.await();
 			}else if(command.equals("LIST")){
 				CountDownLatch doneSignal = new CountDownLatch(1);
 				FileList fileList = new FileList(table[1],doneSignal);
@@ -101,9 +101,12 @@ public class ClientHandler extends Thread {
 				System.out.println("bbnbnbnbn:" +fileList.getFiles());
 			}	
 			
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			close();
 			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
