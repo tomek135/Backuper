@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -97,13 +102,30 @@ public class ClientHandler extends Thread {
 				doneSignal.await();
 				pw.println(fileList.getFiles());
 				System.out.println(fileList.getFiles());
-			}	
+			}else if(command.equals("DELETE")){
+				String filenames = table[1];
+				Path p = null;
+				try {
+					String path=System.getProperty("user.dir");
+					p = Paths.get(path+"/"+user+"/"+filenames);
+				    Files.delete(p);
+				} catch (NoSuchFileException x) {
+				    System.err.format("%s: no such" + " file or directory%n", p);				    
+				} catch (DirectoryNotEmptyException x) {
+				    System.err.format("%s not empty%n", p);
+				} catch (IOException x) {
+				    System.err.println(x);
+				}
+
+
+			}
 			
 		} catch (IOException e) {
 			close();
+			//e.printStackTrace();
 			
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			close();
 			e.printStackTrace();
 		}
 
@@ -115,8 +137,6 @@ public class ClientHandler extends Thread {
 			socket.close();
 		}catch (IOException e) {
 			System.out.println("Polaczenie nie moglo byc zamkniete");
-		}finally {
-			System.exit(0);
 		}
 	}
 	

@@ -3,6 +3,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 
@@ -29,6 +31,12 @@ public class Authentication{
 			}else {
 				userData.put(login, password);
 				saveUserData(userData);
+				String path=System.getProperty("user.dir");
+				try {
+					Files.createDirectories(Paths.get(path+"/"+ login));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				raport = "REG";
 			}
 

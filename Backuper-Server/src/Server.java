@@ -6,7 +6,7 @@ public class Server implements Runnable{
 	
 	private ServerSocket serverSocket;
 	private Socket socket;
-		
+	
 	public Server() {
 		
 	}
@@ -48,7 +48,8 @@ public class Server implements Runnable{
 	             handler.start();
 	             System.out.println("Connection established"); 
             } catch (IOException e) {
-            	close();
+            	//close();
+            	e.printStackTrace();
             }  
        
           	} 

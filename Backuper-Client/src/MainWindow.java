@@ -147,18 +147,39 @@ public class MainWindow extends JFrame {
 		
 		panel_1.setLayout(null);
 		panel_1.add(btnNewButton_2);
-		
+		listModel=new DefaultListModel();
 		JButton btnNewButton_3 = new JButton("Usu\u0144 plik");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(listSelected == true) {
 						if(list.getSelectedValue() != null) {
+							file = (String) list.getSelectedValue();
+							connection.fileListener("DELETE", file, size, frame, null);
+							connection.fileList("LIST");
+							System.out.println(Arrays.toString(connection.getList()));
+							
 
+							scrollPane.setVisible(false);
+							listModel.clear();
+									
+							for (int i=0; i<connection.getList().length; i++) {
+							  listModel.addElement(connection.getList()[i]);
+							  System.out.println(connection.getList()[i]);
+							}
+							list = new JList(listModel);
+						    scrollPane = new JScrollPane(list);
+							scrollPane.setBounds(0, 45, 429, 177);
+							panel_1.add(scrollPane);
+							scrollPane.setVisible(true);
+							scrollPane.setVisible(false);
+							scrollPane.setVisible(true);
+							JOptionPane.showMessageDialog(frame, "Plik " + file+ " zosta³ usuniêty.");
+							
 						}else {
-							JOptionPane.showMessageDialog(frame, "Wybierz plik do usuniêcia");
+							JOptionPane.showMessageDialog(frame, "Wybierz plik do usuniêcia.");
 						}
 				}else {
-					JOptionPane.showMessageDialog(frame, "Wyswietl liste aby wybraæ plik");
+					JOptionPane.showMessageDialog(frame, "Wyswietl liste aby wybraæ plik.");
 				}
 			}
 		});
@@ -195,7 +216,6 @@ public class MainWindow extends JFrame {
 					connection.fileList("LIST");
 					System.out.println(Arrays.toString(connection.getList()));
 					
-					listModel=new DefaultListModel();
 					if(i>0)
 					{
 						scrollPane.setVisible(false);

@@ -17,6 +17,7 @@ public class MainWindow extends JFrame{
 	private JPanel contentPane;
 	private JTextField textField_port;
 	Server serwer;
+	boolean isOn = false;
 	
 	public MainWindow() {
 		
@@ -46,6 +47,7 @@ public class MainWindow extends JFrame{
 		
 		JButton wylaczSerwer = new JButton("Wy\u0142\u0105cz serwer");
 		wylaczSerwer.setBounds(85, 148, 130, 23);
+		wylaczSerwer.setEnabled(false);
 		contentPane.setLayout(null);
 		contentPane.add(lblNewLabel);
 		contentPane.add(textField_port);
@@ -57,7 +59,7 @@ public class MainWindow extends JFrame{
 		{
 			public void actionPerformed(ActionEvent arg0)
             {
-				wylaczSerwer.setEnabled(false);
+				
 				serwer.close();
 				setVisible(false);
             }
@@ -68,14 +70,22 @@ public class MainWindow extends JFrame{
 			public void actionPerformed(ActionEvent arg0)
             {
 				String portString = textField_port.getText();
-				if(portString.equals("") || !isInteger(portString))
+				if((portString.equals("") || !isInteger(portString)))
 					JOptionPane.showMessageDialog(frame, "Wpisz prawid³owy numer portu!");
 				else {
 					int port = Integer.parseInt(textField_port.getText());
-					if(port<65536)
-					serwer = new Server(port);
-					else
-					JOptionPane.showMessageDialog(frame, "Maksymalny numer portu to 2^16-1 (65535).");
+					if(port<65536 && isOn == false)
+					{
+						wylaczSerwer.setEnabled(true);
+						serwer = new Server(port);
+						isOn = true;
+					}
+					else if(isOn == true) {
+						JOptionPane.showMessageDialog(frame, "Serwer jest juz uruchomiony.");
+					}
+					else if(isOn == false) {
+						JOptionPane.showMessageDialog(frame, "Maksymalny numer portu to 2^16-1 (65535).");
+					}
 				}
             }			
 		});	

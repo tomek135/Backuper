@@ -116,7 +116,10 @@ public class Connection {
 				pw.println(command+";"+filename);
 				FileReceiver receiver = new FileReceiver(socket, filename, host, br, frame, directory);
 				receiver.start();
-		}
+		}else if(command.equals("DELETE")){ 
+			pw.println(command+";"+filename);
+			
+	    }
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -126,7 +129,12 @@ public class Connection {
 		pw.println(command+";"+login);
 		try {
 			String message = br.readLine();
-			list = message.split(";");
+			if(message.equals("")) {
+				list[0] = "";
+				JOptionPane.showMessageDialog(frame, "Na serwerze nie ma ¿adnych plików.");
+			}else {
+				list = message.split(";");
+			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(frame, "Po³¹czenie zosta³o przerwane. Uruchom program jeszcze raz.");
 		}

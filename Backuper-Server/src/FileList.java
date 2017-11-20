@@ -20,7 +20,8 @@ public class FileList extends Thread{
 	
 	
     private void getAllFiles(File curDir) {
-
+    	try {
+    		
         File[] filesList = curDir.listFiles();
         for(File f : filesList){
             if(f.isDirectory())
@@ -29,8 +30,11 @@ public class FileList extends Thread{
                 files += f.getName()+";";
             }
         }
-    }
     
+    } catch(NullPointerException e){
+    	files = "";
+    }
+    }
     String getFiles() {
     	return files;
     }
