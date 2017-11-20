@@ -1,28 +1,14 @@
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-
 import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.Toolkit;
-
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
@@ -65,7 +51,7 @@ public class LoginWindow extends JFrame {
 		lblNewLabel_1.setBounds(60, 61, 96, 14);
 		contentPane.add(lblNewLabel_1);
 		
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Has³o");
 		lblPassword.setBounds(60, 86, 96, 14);
 		contentPane.add(lblPassword);
 		
@@ -133,33 +119,12 @@ public class LoginWindow extends JFrame {
 		textField_adres.setBounds(166, 108, 117, 20);
 		textField_adres.setColumns(10);
 		textField_adres.setText("localhost");
-		//jezeli mamy wpisywac localhost to nie trzeba tego robic
-/*		textField_adres.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char character = e.getKeyChar();
-                if (((character < '0') || (character > '9'))
-                        && (character != '.')) {
-                    e.consume();
-                }
-
-            }
-        });*/
 		contentPane.add(textField_adres);
 		
 		textField_port = new JTextField();
 		textField_port.setBounds(166, 133, 117, 20);
 		textField_port.setColumns(10);
 		textField_port.setText("1234");
-		/*textField_port.addKeyListener(new KeyAdapter() {
-	            public void keyTyped(KeyEvent e) {
-	                char character = e.getKeyChar();
-	                if (((character < '0') || (character > '9'))
-	                        && (character != '\b')) {
-	                    e.consume();
-	                }
-
-	            }
-	        });*/
 		contentPane.add(textField_port);
 		
 		JButton btnZaloguj = new JButton("Zaloguj");
@@ -219,7 +184,6 @@ public class LoginWindow extends JFrame {
 		
 			if(login.equals("") || haslo.equals("") || host.equals(""))
 			{
-				System.out.println("tutej");
 				return false;
 			}
 			else

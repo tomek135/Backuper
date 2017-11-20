@@ -3,9 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -42,7 +40,7 @@ public class FileReceiver extends Thread {
 			{
 			  bos.write(mybytearray, 0, count);
 			}
-			JOptionPane.showMessageDialog(frame, "Plik "+ fileName + " zosta³ pobrany");
+			JOptionPane.showMessageDialog(frame, "Plik "+ fileName + " zosta³ pobrany.S");
 			bos.close();
 			fos.close();
 			is.close();

@@ -1,22 +1,19 @@
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Label;
-import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+
 
 public class MainWindow extends JFrame{
-		
+	
+	private JFrame frame = this;
 	private JPanel contentPane;
 	private JTextField textField_port;
 	Server serwer;
@@ -36,7 +33,7 @@ public class MainWindow extends JFrame{
 		setLocationRelativeTo(null);
 		
 		setBackground(Color.LIGHT_GRAY);
-		setTitle("LogAgent");
+		setTitle("Serwer");
 		JLabel lblNewLabel = new JLabel("PORT");
 		lblNewLabel.setBounds(132, 11, 36, 25);
 		
@@ -70,12 +67,30 @@ public class MainWindow extends JFrame{
 		{
 			public void actionPerformed(ActionEvent arg0)
             {
-				int port = Integer.parseInt(textField_port.getText());
-				serwer = new Server(port);
+				String portString = textField_port.getText();
+				if(portString.equals("") || !isInteger(portString))
+					JOptionPane.showMessageDialog(frame, "Wpisz prawid³owy numer portu!");
+				else {
+					int port = Integer.parseInt(textField_port.getText());
+					if(port<65536)
+					serwer = new Server(port);
+					else
+					JOptionPane.showMessageDialog(frame, "Maksymalny numer portu to 2^16-1 (65535).");
+				}
             }			
 		});	
 	}
 	
+	boolean isInteger(String port) {
+	    try { 
+	        Integer.parseInt(port); 
+	    } catch(NumberFormatException e) { 
+	        return false; 
+	    } catch(NullPointerException e) {
+	        return false;
+	    }
+	    return true;
+	}
 
 	
 }

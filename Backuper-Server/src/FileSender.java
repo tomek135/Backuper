@@ -22,10 +22,8 @@ public class FileSender extends Thread {
 		try {
 			int privatePort = getPort();
 			ServerSocket privateServerSocket = new ServerSocket(privatePort);
-			System.out.println("przed wyslaniem portu");
 			pw.println(privatePort);
 			Socket privateSocket = privateServerSocket.accept();
-			System.out.println("poczatek przesylania");
 			byte[] mybytearray = new byte[8192];
 			BufferedInputStream bis = new BufferedInputStream(new FileInputStream("admins/"+file));
 			OutputStream os = privateSocket.getOutputStream();
@@ -34,12 +32,10 @@ public class FileSender extends Thread {
 			{
 			  os.write(mybytearray, 0, count);
 			}
-			System.out.println("koniec przesylania");
 			os.close();
 			bis.close();
 			privateSocket.close();
 			privateServerSocket.close();
-			System.out.println("koniec");
 		}catch(IOException e) {
 			e.printStackTrace();
 		}

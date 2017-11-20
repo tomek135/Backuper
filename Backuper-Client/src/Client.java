@@ -1,5 +1,4 @@
 import java.awt.EventQueue;
-import java.io.File;
 
 public class Client {
 

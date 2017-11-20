@@ -1,9 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -21,10 +16,10 @@ public class Server implements Runnable{
 		try{
 			serverSocket = new ServerSocket(port);
 			ClientHandler.portSet.add(port);
-			System.out.println("Server is working on port: "+port);
+			System.out.println("Serwer nas³uchuje na porcie: "+port);
 			} catch (Exception e) {
-				System.err.println("Create server socket:" + e);
-				return;
+				System.out.println("Wyst¹pi³ b³¹d");
+				
 			}
 		new Thread(this).start();
 	}
@@ -60,7 +55,7 @@ public class Server implements Runnable{
 	}
 	
 	public static void main(String[] args) {
-		MainWindow frame = new MainWindow();
+		new MainWindow();
 	}
 }
 

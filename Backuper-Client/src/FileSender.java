@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 import javax.swing.JFrame;
@@ -42,13 +41,12 @@ public class FileSender extends Thread {
 			{
 			  os.write(mybytearray, 0, count);
 			}
-			JOptionPane.showMessageDialog(frame, "Plik "+ file+ " zosta³ wys³any");
+			JOptionPane.showMessageDialog(frame, "Plik "+ file+ " zosta³ wys³any.");
 			os.close();
 			bis.close();
 			privateSocket.close();
-				System.out.println("koniec");
 		}catch(IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(frame, "Po³¹czenie zosta³o przerwane. Uruchom program jeszcze raz.");
 		}
 	}
 	

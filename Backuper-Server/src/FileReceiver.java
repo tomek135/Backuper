@@ -13,8 +13,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Random;
 
-import javax.swing.JOptionPane;
-
 public class FileReceiver extends Thread {
 	
 	Socket socket;
@@ -55,7 +53,6 @@ public class FileReceiver extends Thread {
 			{
 				bos.write(mybytearray, 0, count);
 			}
-			System.out.println("koniec przesylania");
 			bos.close();
 			fos.close();
 			privateSocket.close();
@@ -70,17 +67,15 @@ public class FileReceiver extends Thread {
 		boolean change = false;
 		
 		Path p = Paths.get(path+"/"+user+"/"+fileName);
-		System.out.println("sciezka: " + p.toString());
+		System.out.println("Œciezka: " + p.toString());
 		File f = new File(p.toString());
 		if(f.exists() && !f.isDirectory()) { 
 			try {
-				System.out.println("istnieje");
 				BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
 				if(attr.size()== size) {
 					change = true;
-					System.out.println("ten sam plik");
+					System.out.println("Ten sam plik");
 				}
-				System.out.println(attr.size() + "aaa"+f.length()+"aaaa"+size);
 				
 				} catch (IOException e) {
 					e.printStackTrace();

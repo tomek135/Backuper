@@ -1,13 +1,11 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JToolBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -15,7 +13,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,11 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 public class MainWindow extends JFrame {
@@ -81,20 +73,26 @@ public class MainWindow extends JFrame {
 				     fd.setVisible(true);
 				     katalog=fd.getDirectory();
 				     file = fd.getFile();
-				     lblNewLabel.setText(katalog + file);
 				     Path p = Paths.get(katalog+"/"+file);
 				     BasicFileAttributes attr;
-					try {
-						attr = Files.readAttributes(p, BasicFileAttributes.class);
-						size = attr.size();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				     
-				     System.out.println("Wybrano plik: " + file);
-				     System.out.println("w katalogu: "+ katalog);
-				     System.out.println("Œcie¿ka: "+ katalog + file); 
+				     if(czyWybranoPlik(file,katalog))
+				     {
+				    	lblNewLabel.setText(katalog + file);
+						try {
+							attr = Files.readAttributes(p, BasicFileAttributes.class);
+							size = attr.size();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					     
+					     System.out.println("Wybrano plik: " + file);
+					     System.out.println("w katalogu: "+ katalog);
+					     System.out.println("Œcie¿ka: "+ katalog + file); 
+				     }
+				     else {
+				    	 JOptionPane.showMessageDialog(frame, "Plik nie zosta³ wybrany.");
+				     }
 			}
 		});
 		
@@ -102,12 +100,16 @@ public class MainWindow extends JFrame {
 		
 		JButton btnNewButton_1 = new JButton("Wy\u015Blij");
 		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-					connection.fileListener("SEND", file,size,frame,file);
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				connection.fileListener("SEND", file,size,frame,file);
+				}catch(Exception e) {
+					JOptionPane.showMessageDialog(frame, "Po³¹czenie zosta³o przerwane. Uruchom program jeszcze raz.");
+				}
 			}
 		});
 		
-		lblNewLabel = new JLabel("\u015Aciezka");
+		lblNewLabel = new JLabel("");
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -189,30 +191,40 @@ public class MainWindow extends JFrame {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				listSelected = true;
-				connection.fileList("LIST");
-				System.out.println("adasaaaa"+ Arrays.toString(connection.getList()));
-				
-				listModel=new DefaultListModel();
-				if(i>0)
-				{
+				try {
+					connection.fileList("LIST");
+					System.out.println(Arrays.toString(connection.getList()));
+					
+					listModel=new DefaultListModel();
+					if(i>0)
+					{
+						scrollPane.setVisible(false);
+						listModel.clear();
+					}				
+					for (int i=0; i<connection.getList().length; i++) {
+					  listModel.addElement(connection.getList()[i]);
+					  System.out.println(connection.getList()[i]);
+					}
+					list = new JList(listModel);
+				    scrollPane = new JScrollPane(list);
+					scrollPane.setBounds(0, 45, 429, 177);
+					panel_1.add(scrollPane);
+					scrollPane.setVisible(true);
 					scrollPane.setVisible(false);
-					listModel.clear();
-				}				
-				for (int i=0; i<connection.getList().length; i++) {
-				  listModel.addElement(connection.getList()[i]);
-				  System.out.println(connection.getList()[i]);
+					scrollPane.setVisible(true);
+					i++;
+				}catch(Exception e) {
+					JOptionPane.showMessageDialog(frame, "Po³¹czenie zosta³o przerwane. Uruchom program jeszcze raz.");
 				}
-				list = new JList(listModel);
-			    scrollPane = new JScrollPane(list);
-				scrollPane.setBounds(0, 45, 429, 177);
-				panel_1.add(scrollPane);
-				scrollPane.setVisible(true);
-				scrollPane.setVisible(false);
-				scrollPane.setVisible(true);
-				i++;
 			}
 		});
 		
-		
+	}
+	
+	boolean czyWybranoPlik(String plik, String katalog) {
+		if (plik !=null && katalog != null)
+			return true;
+		else
+			return false;
 	}
 }

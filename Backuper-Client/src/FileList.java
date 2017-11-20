@@ -26,6 +26,6 @@ public class FileList extends Thread {
             }
         }
         
-        System.out.println("aaa "+ files);
+        System.out.println(files);
     }
 }

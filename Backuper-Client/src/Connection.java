@@ -5,13 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.rmi.ConnectException;
 import java.rmi.UnknownHostException;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 
 public class Connection {
 
@@ -26,6 +25,7 @@ public class Connection {
 	InputStream is;
 	BufferedReader br;
 	FileList fileList;
+	JFrame frame;
 	
 	
 
@@ -104,10 +104,14 @@ public class Connection {
 	void fileListener(String command, String filename, long size, JFrame frame, String directory) {
 	try {	
 		if(command.equals("SEND")) {
+			try {
 				File myFile = new File(filename);
 				pw.println(command+";"+filename+";"+size);
 				FileSender sender = new FileSender(socket, filename, myFile,size, br, host,frame);
 				sender.start();
+			}catch(NullPointerException e) {
+				JOptionPane.showMessageDialog(frame, "Nie wybrano pliku do wys³ania.");
+			}
 		}else if(command.equals("DOWNLOAD")){ 
 				pw.println(command+";"+filename);
 				FileReceiver receiver = new FileReceiver(socket, filename, host, br, frame, directory);
@@ -124,7 +128,7 @@ public class Connection {
 			String message = br.readLine();
 			list = message.split(";");
 		} catch (IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(frame, "Po³¹czenie zosta³o przerwane. Uruchom program jeszcze raz.");
 		}
 	
 	}
