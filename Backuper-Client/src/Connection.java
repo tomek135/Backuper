@@ -27,8 +27,14 @@ public class Connection {
 	FileList fileList;
 	JFrame frame;
 	
-	
-
+	/**
+	 * Funkcja wysy³a na serwer login i has³o wpisane przez u¿ytkownika,
+	 * ³¹czy siê z serwerem na hoscie i porcie podanym przez u¿ytkownika podczas rejestracji 
+	 * @param toSend
+	 * @param host
+	 * @param port
+	 * @return
+	 */
 	String SendToServer(String toSend,String host,int port) {
 			String response = null;
 			
@@ -41,11 +47,9 @@ public class Connection {
 				br = new BufferedReader(
 				new InputStreamReader(is));
 				response = br.readLine();
-		
-				
 				}catch (UnknownHostException exc) {
-						System.out.println("Nieznany host: " + host);
-						response = "NOTCONNECTED";
+					System.out.println("Nieznany host: " + host);
+					response = "NOTCONNECTED";
 				}catch (ConnectException exc) {
 					System.out.println("Brak po³¹czenia z serwerem");
 					response = "NOTCONNECTED";				
@@ -55,6 +59,14 @@ public class Connection {
 					return response;
 		}
 		
+	/**
+	 * Funkcja wysy³aj¹ca na serwer dane u¿ytkownika podczas logowania
+	 * @param login
+	 * @param haslo
+	 * @param host
+	 * @param port
+	 * @return odpowiedz od serwera
+	 */
 	String checkAuthorizationAfterLogin(String login,String haslo,String host,int port) {
 		this.login = login;
 		String response = null;
@@ -63,7 +75,8 @@ public class Connection {
 		response =  SendToServer(dataToSend,host,port);
 		if(response.equals("OK")) {
 
-		}else {
+		}
+		else {
 			try {
 				br.close();
 				is.close();
@@ -81,6 +94,15 @@ public class Connection {
 		return response;
 	}
 	
+	/**
+	 * Funkcja wysy³aj¹ca na serwer dane u¿ytkownika podczas rejestracji 
+	 * @param login
+	 * @param haslo
+	 * @param host
+	 * @param port
+	 * @return odpowiedz od serwera
+	 */
+	
 	String checkAuthorizationAfterRegister(String login, String haslo,String host,int port) {
 		String response = null;
 		dataToSend = "REGISTER"+";"+login+";"+haslo;
@@ -91,7 +113,7 @@ public class Connection {
 			pw.close();
 			os.close();
 			socket.close();
-		} catch (IOException e) {
+		}catch (IOException e) {
 			return "NOTCONNECTED";
 		}catch (Exception e) {
 			System.out.println("Brak po³¹czenia z serwerem");
@@ -100,6 +122,14 @@ public class Connection {
 		return response;
 	}
 	
+	/**
+	 * Funkcja pozwalaj¹ca na wys³anie pliku na serwer, pobranie pliku z serwera, usuniêcie pliku z serwera
+	 * @param command - zmienna oznaczaj¹ca jak¹ akcjê ma wykonaæ serwer - wys³anie, pobranie, usuniêcie
+	 * @param filename - nazwa pliku jaki ma zostaæ wys³any, pobrany, usuniêty
+	 * @param size - rozmiar pliku wysy³anego
+	 * @param frame - g³ówne okno programu
+	 * @param directory - œcie¿ka do folderu gdzie ma zostaæ zapisany pobrany plik
+	 */
 	
 	void fileListener(String command, String filename, long size, JFrame frame, String directory) {
 	try {	
@@ -118,13 +148,16 @@ public class Connection {
 				receiver.start();
 		}else if(command.equals("DELETE")){ 
 			pw.println(command+";"+filename);
-			
 	    }
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Funkcja wysy³aj¹ca na serwer komendê wyswietlenia listy plików które znajaduj¹ siê w folderze danego u¿ytkownika
+	 * @param command - komenda pozwalaj¹ca serwerowi okreœliæ jak¹ funkcjê ma wykonaæ
+	 */
 	void fileList(String command) {
 		pw.println(command+";"+login);
 		try {
@@ -141,6 +174,10 @@ public class Connection {
 	
 	}
 	
+	/**
+	 * Funkcja zwracaj¹ca listê wys³anych plików
+	 * @return - lista plików na serwerze
+	 */
 	String[] getList() {
 		return list;
 	}

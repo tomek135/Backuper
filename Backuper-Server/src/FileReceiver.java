@@ -33,18 +33,17 @@ public class FileReceiver extends Thread {
 	}
 	
 	public void run() {
+		
 		try {
-
-		int privatePort = getPort();
-		ServerSocket privateServerSocket = new ServerSocket(privatePort);
-		System.out.println("przed wyslaniem portu");
-		pw.println(privatePort);
-		Socket privateSocket = privateServerSocket.accept();
-		System.out.println("poczatek przesylania");
-		System.out.println(path);
-		byte[] mybytearray = new byte[8192];
-		InputStream is = privateSocket.getInputStream();
-	
+			int privatePort = getPort();
+			ServerSocket privateServerSocket = new ServerSocket(privatePort);
+			System.out.println("przed wyslaniem portu");
+			pw.println(privatePort);
+			Socket privateSocket = privateServerSocket.accept();
+			System.out.println("poczatek przesylania");
+			System.out.println(path);
+			byte[] mybytearray = new byte[8192];
+			InputStream is = privateSocket.getInputStream();
 			Files.createDirectories(Paths.get(path+"/"+ user));
 			FileOutputStream fos = new FileOutputStream(path+"/"+user+"/"+fileName);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -56,8 +55,7 @@ public class FileReceiver extends Thread {
 			bos.close();
 			fos.close();
 			privateSocket.close();
-			privateServerSocket.close();
-			
+			privateServerSocket.close();	
 		}catch(IOException e) {
 			System.out.println("Client zamkniety");
 		}
@@ -65,23 +63,20 @@ public class FileReceiver extends Thread {
 	
 	boolean checkFile(String filename){
 		boolean change = false;
-		
 		Path p = Paths.get(path+"/"+user+"/"+fileName);
 		System.out.println("Œciezka: " + p.toString());
 		File f = new File(p.toString());
 		if(f.exists() && !f.isDirectory()) { 
 			try {
 				BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
-				if(attr.size()== size) {
-					change = true;
-					System.out.println("Ten sam plik");
-				}
-				
-				} catch (IOException e) {
+					if(attr.size()== size) {
+						change = true;
+						System.out.println("Ten sam plik");
+					}
+				}catch (IOException e) {
 					e.printStackTrace();
 				}
 		}
-		
 		return change;
 		
 	}
@@ -93,6 +88,5 @@ public class FileReceiver extends Thread {
 			port = rand.nextInt(8000) + 1000;
 		}
 		return port;
-		
 	}
 }

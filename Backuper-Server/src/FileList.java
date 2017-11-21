@@ -20,8 +20,7 @@ public class FileList extends Thread{
 	
 	
     private void getAllFiles(File curDir) {
-    	try {
-    		
+    	try {	
         File[] filesList = curDir.listFiles();
         for(File f : filesList){
             if(f.isDirectory())

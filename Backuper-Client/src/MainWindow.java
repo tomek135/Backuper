@@ -26,6 +26,12 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
+/**
+ * Klasa odpowiedzialna za utworzenie g³ównego okna programu Klienta, u¿ytkownik mo¿e w oknie wybraæ plik do wys³ania, 
+ * wyœwietliæ listê wys³anych plików oraz pobraæ wybrany plik z serwera.
+ * @author Tomasz
+ *
+ */
 public class MainWindow extends JFrame {
 
 	private JFrame frame = this;
@@ -42,10 +48,9 @@ public class MainWindow extends JFrame {
 	int i = 0;
 
 	/**
-	 * Create the frame.
+	 * Konstruktor tworz¹cy g³ówne okno programu
 	 */
 	public MainWindow(Connection connection) {
-		
 		path = System.getProperty("user.dir");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,11 +63,12 @@ public class MainWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
+		setTitle("Backuper");
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setPreferredSize(new Dimension(200, 250));
 		contentPane.add(tabbedPane, BorderLayout.NORTH);
 		
+		//Zak³adka "Wybór pliku"
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Wybór pliku", null, panel, null);
 		
@@ -85,7 +91,6 @@ public class MainWindow extends JFrame {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					     
 					     System.out.println("Wybrano plik: " + file);
 					     System.out.println("w katalogu: "+ katalog);
 					     System.out.println("Œcie¿ka: "+ katalog + file); 
@@ -138,10 +143,9 @@ public class MainWindow extends JFrame {
 		);
 		panel.setLayout(gl_panel);
 		
+		//Zak³adka "Pliki na serwerze"
 		JPanel panel_1 = new JPanel();
-	
 		tabbedPane.addTab("Pliki na serwerze", null, panel_1, null);
-		
 		JButton btnNewButton_2 = new JButton("Wy\u015Bwietl list\u0119");
 		btnNewButton_2.setBounds(0, 11, 130, 23);
 		
@@ -157,11 +161,8 @@ public class MainWindow extends JFrame {
 							connection.fileListener("DELETE", file, size, frame, null);
 							connection.fileList("LIST");
 							System.out.println(Arrays.toString(connection.getList()));
-							
-
 							scrollPane.setVisible(false);
-							listModel.clear();
-									
+							listModel.clear();								
 							for (int i=0; i<connection.getList().length; i++) {
 							  listModel.addElement(connection.getList()[i]);
 							  System.out.println(connection.getList()[i]);
@@ -215,7 +216,7 @@ public class MainWindow extends JFrame {
 				try {
 					connection.fileList("LIST");
 					System.out.println(Arrays.toString(connection.getList()));
-					
+
 					if(i>0)
 					{
 						scrollPane.setVisible(false);

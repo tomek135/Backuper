@@ -7,16 +7,17 @@ public class FileList extends Thread {
 	
 	public FileList(String directory) {
         curDir = new File("./"+directory);
-
 	}
 	
 	public void run() {
         getAllFiles(curDir);
 	}
 	
-	
+	/**
+	 * funkcja wypisuj¹ca wszystkie pliki w danym folderze i zapisuje do zmiennej files
+	 * @param curDir - œcie¿ka do folderu 
+	 */
     private void getAllFiles(File curDir) {
-
         File[] filesList = curDir.listFiles();
         for(File f : filesList){
             if(f.isDirectory())
@@ -25,7 +26,6 @@ public class FileList extends Thread {
                 files += f.getName()+";";
             }
         }
-        
         System.out.println(files);
     }
 }

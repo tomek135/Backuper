@@ -12,6 +12,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
+/**
+ * Klasa odpowiedzialna za utworzenie okna logowania Klienta z serwerem
+ * @author Tomasz
+ *
+ */
 public class LoginWindow extends JFrame {
 
 	private JPanel contentPane;
@@ -25,9 +30,11 @@ public class LoginWindow extends JFrame {
 	String login ="";
 	String passwordToString="";
 	String host="";
+	String portToString="";
 	int port;
+	
 	/**
-	 * Create the frame.
+	 * Konstruktor tworz¹cy okno logowania 
 	 */
 	public LoginWindow(Connection connection) {
 		setResizable(false);
@@ -41,7 +48,7 @@ public class LoginWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+		setTitle("Logowanie");
 		JLabel lblNewLabel = new JLabel("BACKUPER");
 		lblNewLabel.setBounds(138, 11, 99, 22);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -66,35 +73,36 @@ public class LoginWindow extends JFrame {
 				char[] password = passwordField.getPassword();
 				passwordToString = String.valueOf(password);
 				host = textField_adres.getText();
-				try {
-					port = Integer.parseInt(textField_port.getText());
-					
-					if(weryfikujDane(login,passwordToString,host))
-					{
+				portToString = textField_port.getText();
+	
+				if(weryfikujDane(login,passwordToString,host,portToString))
+				{
 						
+					try {
+						port = Integer.parseInt(textField_port.getText());
 						response = connection.checkAuthorizationAfterRegister(login,passwordToString,host,port);
-						
 						switch(response) {
 							case "REG":
-								JOptionPane.showMessageDialog(frame, "Rejestracja przebieg³a pomyœlnie");
+								JOptionPane.showMessageDialog(frame, "Rejestracja przebieg³a pomyœlnie.");
 								break;
 							case "BUSY":
-								JOptionPane.showMessageDialog(frame, "Uzytkownik juz istnieje");
+								JOptionPane.showMessageDialog(frame, "U¿ytkownik juz istnieje.");
 								break;
 							case "NOTCONNECTED":
-								JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem");
+								JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem.");
 								break;
 						}
+					}catch(NumberFormatException e) {
+						JOptionPane.showMessageDialog(frame, "Podano nie poprawny port.");
 					}
-					else {
-						JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
+					catch (Exception e)
+					{
+						System.out.println("Wyst¹pi³ b³¹d przy próbie uwierzytelnienia:" + e.toString());
 					}
-				}catch (Exception e)
-				{
-					JOptionPane.showMessageDialog(frame, "Podano nie poprawny port");
-					return;
 				}
-
+				else {
+					JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
+				}
 			}
 		});
 
@@ -134,40 +142,43 @@ public class LoginWindow extends JFrame {
 				char[] password = passwordField.getPassword();
 				passwordToString = String.valueOf(password);
 				host = textField_adres.getText();
-				try {
-					port = Integer.parseInt(textField_port.getText());
-					
-					if(weryfikujDane(login,passwordToString,host))
-					{
+				portToString = textField_port.getText();
+
+				if(weryfikujDane(login,passwordToString,host,portToString))
+				{
+					try {
+						port = Integer.parseInt(textField_port.getText());
 						response = connection.checkAuthorizationAfterLogin(login,passwordToString,host,port);
 						System.out.println("odp: " +response);
 						switch(response) {
 							case "OK":
 							{
-								JOptionPane.showMessageDialog(frame, "Zalogowano pomyslnie");
+								JOptionPane.showMessageDialog(frame, "Zalogowano pomyslnie.");
 								MainWindow mainWindow = new MainWindow(connection);
 								mainWindow.setVisible(true);
 								setVisible(false);
 								break;
 							}
 							case "BRAK":
-								JOptionPane.showMessageDialog(frame, "Nie ma takiego uzytkownika");
+								JOptionPane.showMessageDialog(frame, "Nie ma takiego uzytkownika.");
 								break;
 							case "WRONG":
-								JOptionPane.showMessageDialog(frame, "Podane has³o jest nieprawid³owe");
+								JOptionPane.showMessageDialog(frame, "Podane has³o jest nieprawid³owe.");
 								break;
 							case "NOTCONNECTED":
-								JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem");
+								JOptionPane.showMessageDialog(frame, "Brak po³¹czenia z serwerem.");
 								break;
 						}
+					}catch(NumberFormatException e) {
+						JOptionPane.showMessageDialog(frame, "Podano nie poprawny port.");
 					}
-					else {
-						JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
+					catch (Exception e)
+					{
+						System.out.println("Wyst¹pi³ b³¹d przy próbie uwierzytelnienia:" + e.toString());
 					}
-				}catch (Exception e)
-				{
-					JOptionPane.showMessageDialog(frame, "Podano nie poprawny port");
-					return;
+				}
+				else {
+					JOptionPane.showMessageDialog(frame, "Nie wszytkie dane zosta³y podane lub podane s¹ nieprawid³owo! ");
 				}
 
 			}
@@ -180,12 +191,17 @@ public class LoginWindow extends JFrame {
 		contentPane.add(passwordField);
 	}
 	
-	boolean weryfikujDane(String login, String haslo, String host) {
-		
-			if(login.equals("") || haslo.equals("") || host.equals(""))
-			{
+	/**
+	 * Funkcja weryfikuj¹ca czy wszystkie dane zosta³y wprowadzone przez u¿ytkownika
+	 * @param login - login u¿ytkownika
+	 * @param haslo - has³o u¿ytkownika
+	 * @param host - adres na którym jest serwer
+	 * @param port - port na którym serwer nas³uchuje
+	 * @return true je¿eli wszystkie pola s¹ wype³nione, false je¿eli przynajmniej jedno z nich jest puste
+	 */
+	boolean weryfikujDane(String login, String haslo, String host, String port) {
+			if(login.equals("") || haslo.equals("") || host.equals("") || port.equals(""))
 				return false;
-			}
 			else
 				return true;	
 	}

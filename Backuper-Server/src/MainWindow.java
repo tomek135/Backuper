@@ -10,7 +10,11 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
+/**
+ * Klasa odpowiedzialna za wyœwietlenie okna serwera gdzie u¿ytkownik ma mo¿liwoœæ wpisania numeru portu i w³¹czenia lub wy³aczenia serwera
+ * @author Tomasz
+ *
+ */
 public class MainWindow extends JFrame{
 	
 	private JFrame frame = this;
