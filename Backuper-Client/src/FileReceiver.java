@@ -4,6 +4,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.time.LocalDateTime;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -27,12 +29,12 @@ public class FileReceiver extends Thread {
 	public void run() {
 		try {
 			String mes = br.readLine();
-			System.out.println("port" + mes);
+			System.out.println("["+LocalDateTime.now()+"]"+"Port: " + mes);
 			int privatePort = Integer.parseInt(mes);
 			Socket privateSocket = new Socket(host, privatePort);
 			byte[] mybytearray = new byte[8192];
 			InputStream is = privateSocket.getInputStream();
-			System.out.println(directory+ "/" + fileName);
+			System.out.println("["+LocalDateTime.now()+"]"+"Œcie¿ka: "+ directory +"/" + fileName);
 			FileOutputStream fos = new FileOutputStream(directory+"/"+ fileName);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			int count;

@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 
@@ -55,7 +56,7 @@ public class Authentication{
                oos.writeObject(userData);
                oos.close();
                fos.close();
-               System.out.println("Serialized HashMap data is saved in hashmap.ser");
+               System.out.println("["+LocalDateTime.now()+"]"+"Serialized HashMap data is saved in hashmap.ser");
         }catch(IOException ioe)
          {
                ioe.printStackTrace();
@@ -72,7 +73,7 @@ public class Authentication{
 	         loadedMap = (HashMap) ois.readObject();
 	         ois.close();
 	         fis.close();
-             System.out.println("Loaded data");
+             System.out.println("["+LocalDateTime.now()+"]"+"Dane za³adowane");
 	      }catch(IOException ioe){
 	         ioe.printStackTrace();
 			 createMap();

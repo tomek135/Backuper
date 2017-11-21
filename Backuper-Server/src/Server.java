@@ -1,15 +1,13 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 public class Server implements Runnable{
 	
 	private ServerSocket serverSocket;
 	private Socket socket;
-	static Set<Integer> portSet = new HashSet<Integer>();
-			
+	
 	public Server() {
 		
 	}
@@ -22,10 +20,10 @@ public class Server implements Runnable{
 	{
 		try{
 			serverSocket = new ServerSocket(port);
-			Server.portSet.add(port);
-			System.out.println("Serwer nas³uchuje na porcie: "+port);
+			ClientHandler.portSet.add(port);
+			System.out.println("["+LocalDateTime.now()+"]"+"Serwer nas³uchuje na porcie: "+port);
 			} catch (Exception e) {
-				System.out.println("Wyst¹pi³ b³¹d");
+				System.out.println("["+LocalDateTime.now()+"]"+"Wyst¹pi³ b³¹d: "+ e);
 				
 			}
 		new Thread(this).start();
@@ -40,9 +38,9 @@ public class Server implements Runnable{
 			socket.close();
 			serverSocket.close();
 		}catch (IOException e) {
-			System.out.println("Polaczenie nie moglo byc zamkniete");
+			System.out.println("["+LocalDateTime.now()+"]"+"Polaczenie nie moglo byc zamkniete");
 		}finally {
-			System.out.println("Serwer wyl¹czony ");
+			System.out.println("["+LocalDateTime.now()+"]"+"Serwer wyl¹czony ");
 			System.exit(0);
 		}
 	}
@@ -58,10 +56,11 @@ public class Server implements Runnable{
 				 socket = serverSocket.accept();
 	             ClientHandler handler = new ClientHandler(socket); 
 	             handler.start();
-	             System.out.println("Connection established"); 
+	             System.out.println("["+LocalDateTime.now()+"]"+"Client po³¹czy³ siê z Serwerem"); 
             } catch (IOException e) {
             	//close();
-            	e.printStackTrace();
+            	System.out.println("["+LocalDateTime.now()+"]"+ e);
+  
             }  
        
           	} 

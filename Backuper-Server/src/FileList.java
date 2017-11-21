@@ -1,4 +1,5 @@
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 
 public class FileList extends Thread{
@@ -35,6 +36,7 @@ public class FileList extends Thread{
     }
     }
     String getFiles() {
+    	System.out.println("["+LocalDateTime.now()+"]"+"Daj pliki znajduj¹ce siê na serwerze");
     	return files;
     }
 }

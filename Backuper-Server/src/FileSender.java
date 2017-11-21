@@ -30,7 +30,7 @@ public class FileSender extends Thread {
 		try {
 			int privatePort = getPort();
 			ServerSocket privateServerSocket = new ServerSocket(privatePort);
-			Server.portSet.add(privatePort);
+			ClientHandler.portSet.add(privatePort);
 			pw.println(privatePort);
 			Socket privateSocket = privateServerSocket.accept();
 			byte[] mybytearray = new byte[8192];
@@ -45,7 +45,7 @@ public class FileSender extends Thread {
 			bis.close();
 			privateSocket.close();
 			privateServerSocket.close();
-			Server.portSet.remove(privatePort);
+			ClientHandler.portSet.remove(privatePort);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -57,7 +57,7 @@ public class FileSender extends Thread {
 	int getPort() {
 		Random rand = new Random();
 		int  port = rand.nextInt(8000) + 1000;
-		while(Server.portSet.contains(port)) {
+		while(ClientHandler.portSet.contains(port)) {
 			port = rand.nextInt(8000) + 1000;
 		}
 		return port;

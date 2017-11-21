@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -27,6 +28,8 @@ public class ClientHandler extends Thread {
 	PrintWriter pw;
 	boolean exit = true;
 	long size;
+	static Set<Integer> portSet = new HashSet<Integer>();
+	
 	public ClientHandler(Socket socket) throws IOException { 
         this.socket = socket; 
     } 
@@ -46,10 +49,10 @@ public class ClientHandler extends Thread {
 		   String action = message[0];
 		   String login = message[1];
 		   String password = message[2];
-		   System.out.println(action);				
+		   System.out.println("["+LocalDateTime.now()+"]"+"Klient wys³a³ ¿¹danie: " +action);				
 		   Authentication auth = new Authentication();
 		   String messageBack = auth.authenticate(action, login, password);
-		   System.out.println("messageBack" + messageBack);
+		   System.out.println("["+LocalDateTime.now()+"]"+"Wiadomoœæ zwrotna z serwera do klienta: " + messageBack);
 		   if(messageBack.equals("OK")) {
 			   user = login;
 			   pw.println("OK");
@@ -66,10 +69,10 @@ public class ClientHandler extends Thread {
 			   socket.close();
 		   }
 
-		System.out.println("koniec");
+		System.out.println("["+LocalDateTime.now()+"]"+"Uwierzytelnianie zakoñczone");
 		
 	   } catch (Exception e) {
-		   System.err.println("Server exception: " + e);
+		   System.err.println("["+LocalDateTime.now()+"]"+"Server exception: " + e);
 		   e.printStackTrace();
 	   }
 	
@@ -104,7 +107,7 @@ public class ClientHandler extends Thread {
 				fileList.start();
 				doneSignal.await();
 				pw.println(fileList.getFiles());
-				System.out.println(fileList.getFiles());
+				System.out.println("["+LocalDateTime.now()+"]"+"Lista plików: "+fileList.getFiles());
 			}else if(command.equals("DELETE")){
 				String filenames = table[1];
 				Path p = null;
@@ -141,7 +144,7 @@ public class ClientHandler extends Thread {
 		try{
 			socket.close();
 		}catch (IOException e) {
-			System.out.println("Polaczenie nie moglo byc zamkniete");
+			System.out.println("["+LocalDateTime.now()+"]"+"Polaczenie nie moglo byc zamkniete");
 		}
 	}
 	

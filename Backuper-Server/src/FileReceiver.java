@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 public class FileReceiver extends Thread {
@@ -46,12 +47,14 @@ public class FileReceiver extends Thread {
 		try {
 			int privatePort = getPort();
 			ServerSocket privateServerSocket = new ServerSocket(privatePort);
-			System.out.println("przed wyslaniem portu");
-			Server.portSet.add(privatePort);
+			System.out.println("["+LocalDateTime.now()+"]"+"Przed wyslaniem portu: "+ privatePort);
+			ClientHandler.portSet.add(privatePort);
 			pw.println(privatePort);
+			System.out.println("["+LocalDateTime.now()+"]"+"Po wys³aniu portu: "+ privatePort);
 			Socket privateSocket = privateServerSocket.accept();
-			System.out.println("poczatek przesylania");
-			System.out.println(path);
+			System.out.println("["+LocalDateTime.now()+"]"+"Po³¹czenie zaakceptowane");
+			System.out.println("["+LocalDateTime.now()+"]"+"Poczatek przesylania pliku");
+			System.out.println("["+LocalDateTime.now()+"]"+"Œcie¿ka gdzie znajduje siê folder z plikami: "+path);
 			byte[] mybytearray = new byte[8192];
 			InputStream is = privateSocket.getInputStream();
 			Files.createDirectories(Paths.get(path+"/"+ user));
@@ -62,27 +65,28 @@ public class FileReceiver extends Thread {
 			{
 				bos.write(mybytearray, 0, count);
 			}
+			System.out.println("["+LocalDateTime.now()+"]"+"Plik zosta³ przes³any. Œcie¿ka do pliku: "+path+"/"+user+"/"+fileName);
 			bos.close();
 			fos.close();
 			privateSocket.close();
 			privateServerSocket.close();
-			Server.portSet.remove(privatePort);
+			ClientHandler.portSet.remove(privatePort);
 		}catch(IOException e) {
-			System.out.println("Client zamkniety");
+			System.out.println("["+LocalDateTime.now()+"]"+"Client zamkniety");
 		}
   }
 	
 	boolean checkFile(String filename){
 		boolean change = false;
 		Path p = Paths.get(path+"/"+user+"/"+fileName);
-		System.out.println("Œciezka: " + p.toString());
+		System.out.println("["+LocalDateTime.now()+"]"+"Œciezka: " + p.toString());
 		File f = new File(p.toString());
 		if(f.exists() && !f.isDirectory()) { 
 			try {
 				BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
 					if(attr.size()== size) {
 						change = true;
-						System.out.println("Ten sam plik");
+						System.out.println("["+LocalDateTime.now()+"]"+"Ten sam plik");
 					}
 				}catch (IOException e) {
 					e.printStackTrace();
@@ -98,7 +102,7 @@ public class FileReceiver extends Thread {
 	int getPort() {
 		Random rand = new Random();
 		int  port = rand.nextInt(8000) + 1000;
-		while(Server.portSet.contains(port)) {
+		while(ClientHandler.portSet.contains(port)) {
 			port = rand.nextInt(8000) + 1000;
 		}
 		return port;
