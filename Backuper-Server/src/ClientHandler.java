@@ -18,7 +18,6 @@ import java.util.concurrent.CountDownLatch;
 
 public class ClientHandler extends Thread {
 	
-	static Set<Integer> portSet = new HashSet<Integer>();
 	Socket socket;
 	String user;
 	BufferedReader br;
@@ -31,7 +30,9 @@ public class ClientHandler extends Thread {
 	public ClientHandler(Socket socket) throws IOException { 
         this.socket = socket; 
     } 
-
+	/**
+	 * Funckja tworzaca strumienie komunikacyjne, obslugujaca logowanie oraz zadania klientow
+	 */
    public void run() {
 	   try {
 		   is = socket.getInputStream();
@@ -73,7 +74,9 @@ public class ClientHandler extends Thread {
 	   }
 	
    }
-   
+   /**
+    * Funkcja nas³uchujaca na zadania klienta
+    */
 	void fileListener()  {
 		
 		try {
@@ -130,7 +133,9 @@ public class ClientHandler extends Thread {
 		}
 
 	}
-	
+	/**
+	 * Funkcja zamykacja dzialanie serwera dla danego klienta
+	 */
 	public void close()
 	{
 		try{

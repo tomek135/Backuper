@@ -12,16 +12,25 @@ public class FileSender extends Thread {
 	Socket socket;
 	File file;
 	PrintWriter pw;
-	
+	/**
+	 * Konstruktor klasy FileSender
+	 * @param socket
+	 * @param file
+	 * @param pw
+	 */
 	public FileSender(Socket socket, File file, PrintWriter pw) {
 		this.socket = socket;
 		this.file = file;
 		this.pw = pw;
 	}
+	/**
+	 * Funckja odpowiadajaca za wysy³anie plików do klienta
+	 */
 	public void run() {
 		try {
 			int privatePort = getPort();
 			ServerSocket privateServerSocket = new ServerSocket(privatePort);
+			Server.portSet.add(privatePort);
 			pw.println(privatePort);
 			Socket privateSocket = privateServerSocket.accept();
 			byte[] mybytearray = new byte[8192];
@@ -36,15 +45,19 @@ public class FileSender extends Thread {
 			bis.close();
 			privateSocket.close();
 			privateServerSocket.close();
+			Server.portSet.remove(privatePort);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
     }
-	
+	/**
+	 * Funkcja losujaca numer portu
+	 * @return
+	 */
 	int getPort() {
 		Random rand = new Random();
 		int  port = rand.nextInt(8000) + 1000;
-		while(ClientHandler.portSet.contains(port)) {
+		while(Server.portSet.contains(port)) {
 			port = rand.nextInt(8000) + 1000;
 		}
 		return port;

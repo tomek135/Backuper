@@ -32,7 +32,9 @@ public class FileSender extends Thread {
 	public void run() {
 		try {
 			int privatePort = Integer.parseInt(br.readLine());
+			System.out.println("wczyta³ port" + ((Integer)privatePort).toString());
 			Socket privateSocket = new Socket(host, privatePort);
+			System.out.println("po³aczy³ port" + ((Integer)privatePort).toString());
 			byte[] mybytearray = new byte[8192];
 			bis = new BufferedInputStream(new FileInputStream(file));
 			os = privateSocket.getOutputStream();

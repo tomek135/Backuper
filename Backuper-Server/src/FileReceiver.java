@@ -22,7 +22,14 @@ public class FileReceiver extends Thread {
 	String path=System.getProperty("user.dir");
 	long size = 0;
 	OutputStream os;
-	
+	/**
+	 * Konstruktor klasy FileReceiver
+	 * @param socket
+	 * @param fileName
+	 * @param user
+	 * @param pw
+	 * @param size
+	 */
 	public FileReceiver(Socket socket, String fileName, String user, PrintWriter pw, long size) {
 		this.socket = socket;
 		this.fileName = fileName;
@@ -31,13 +38,16 @@ public class FileReceiver extends Thread {
 		this.size = size;
 		
 	}
-	
+	/**
+	 * Metoda odpoiwadajaca za pobieranie pliku od klienta
+	 */
 	public void run() {
 		
 		try {
 			int privatePort = getPort();
 			ServerSocket privateServerSocket = new ServerSocket(privatePort);
 			System.out.println("przed wyslaniem portu");
+			Server.portSet.add(privatePort);
 			pw.println(privatePort);
 			Socket privateSocket = privateServerSocket.accept();
 			System.out.println("poczatek przesylania");
@@ -55,7 +65,8 @@ public class FileReceiver extends Thread {
 			bos.close();
 			fos.close();
 			privateSocket.close();
-			privateServerSocket.close();	
+			privateServerSocket.close();
+			Server.portSet.remove(privatePort);
 		}catch(IOException e) {
 			System.out.println("Client zamkniety");
 		}
@@ -80,11 +91,14 @@ public class FileReceiver extends Thread {
 		return change;
 		
 	}
-	
+	/**
+	 * Funkcja losuja numer portu, sprawdzajaca czy dany port nie jest zajety
+	 * @return
+	 */
 	int getPort() {
 		Random rand = new Random();
 		int  port = rand.nextInt(8000) + 1000;
-		while(ClientHandler.portSet.contains(port)) {
+		while(Server.portSet.contains(port)) {
 			port = rand.nextInt(8000) + 1000;
 		}
 		return port;

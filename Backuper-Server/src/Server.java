@@ -1,21 +1,28 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Server implements Runnable{
 	
 	private ServerSocket serverSocket;
 	private Socket socket;
-	
+	static Set<Integer> portSet = new HashSet<Integer>();
+			
 	public Server() {
 		
 	}
 	
+	/**
+	 * Konstruktor tworzacy socket serwera i uruchamiajcy jego watek
+	 * @param port
+	 */
 	public Server(int port) 
 	{
 		try{
 			serverSocket = new ServerSocket(port);
-			ClientHandler.portSet.add(port);
+			Server.portSet.add(port);
 			System.out.println("Serwer nas³uchuje na porcie: "+port);
 			} catch (Exception e) {
 				System.out.println("Wyst¹pi³ b³¹d");
@@ -24,6 +31,9 @@ public class Server implements Runnable{
 		new Thread(this).start();
 	}
 	
+	/**
+	 * Funkcja konczaca dzialanie programu
+	 */
 	public void close()
 	{
 		try{
@@ -36,7 +46,9 @@ public class Server implements Runnable{
 			System.exit(0);
 		}
 	}
-	
+	/**
+	 * Funkcja akceptujaca nowych uzytkownikow, tworzaca nowy watek dla kazdego z nich
+	 */
 
 	@Override
 	public void run() {

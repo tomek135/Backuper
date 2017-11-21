@@ -69,6 +69,7 @@ public class Connection {
 	 */
 	String checkAuthorizationAfterLogin(String login,String haslo,String host,int port) {
 		this.login = login;
+		this.host = host;
 		String response = null;
 		dataToSend = "LOGIN"+";"+login+";"+haslo;
 		System.out.println("data to send" +dataToSend);

@@ -75,8 +75,10 @@ public class Authentication{
              System.out.println("Loaded data");
 	      }catch(IOException ioe){
 	         ioe.printStackTrace();
+			 createMap();
 	      } catch (ClassNotFoundException e){
 			e.printStackTrace();
+			createMap();
 	      }
 		
 		return loadedMap;
