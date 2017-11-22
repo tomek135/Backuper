@@ -59,7 +59,7 @@ public class Server implements Runnable{
 	             System.out.println("["+LocalDateTime.now()+"]"+"Client po³¹czy³ siê z Serwerem"); 
             } catch (IOException e) {
             	//close();
-            	System.out.println("["+LocalDateTime.now()+"]"+ e);
+            	System.out.println("["+LocalDateTime.now()+"]"+ "Po³¹czenie zakoñczone");
   
             }  
        
