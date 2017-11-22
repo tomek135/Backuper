@@ -196,7 +196,7 @@ public class MainWindow extends JFrame {
 				        JFileChooser f = new JFileChooser();
 				        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
 				        f.showSaveDialog(null);
-				        String directory = f.getCurrentDirectory().getAbsolutePath();
+				        String directory = f.getSelectedFile().getAbsolutePath();
 						file = (String) list.getSelectedValue();
 						connection.fileListener("DOWNLOAD", file, size, frame, directory);
 						
